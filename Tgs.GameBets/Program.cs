@@ -101,4 +101,6 @@ _ = app.UseSwaggerUI();
 _ = app.MapControllers();
 _ = app.MapSwagger();
 
+app.UseHealthChecks("/healthz");
+
 app.Run();
