@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Tgs.GameBets.Client;
+using Tgs.GameBets.Core;
 using Tgs.GameBets.Core.ApplicationServices;
 using Tgs.ServiceUtility;
 
@@ -10,7 +11,7 @@ namespace Tgs.GameBets.IntegrationUnitTest;
 public class GameBetsFirstUnitTest
 {
 	[Fact]
-	public async Task GameBetsFirst_Command()
+	public async Task GameBetFirst_Command()
 	{
 		var externalRoundId = Guid.NewGuid().ToString();
 		var externalBetId = Guid.NewGuid().ToString();
@@ -109,5 +110,42 @@ public class GameBetsFirstUnitTest
 		var client = new GameBetsClient(httpClient);
 
 		await client.GameBetFirstCommandAsync(source);
+	}
+
+	[Fact]
+	public async Task GameBetFirst_Exist()
+	{
+		var gameProviderId = Guid.NewGuid();
+		var gameId = 1;
+		var walletId = Guid.NewGuid();
+		var externalBetId = Guid.NewGuid().ToString();
+		var externalCreatedOn = new DateTimeOffset(2024, 04, 23, 11, 40, 40, TimeSpan.FromHours(+8));
+
+		var web = new GameBetsApplicationTest(builder => _ = builder.ConfigureServices(services =>
+		{
+			var fakeRepository = Substitute.For<IGameBetFirstRepository>();
+			_ = fakeRepository.ExistAsync(
+				Arg.Is(gameProviderId),
+				Arg.Is(gameId),
+				Arg.Is(walletId),
+				Arg.Is(externalBetId),
+				Arg.Is(externalCreatedOn),
+				cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(true);
+
+			_ = services.AddTransient(_ => fakeRepository);
+		}));
+
+		var httpClient = web.CreateDefaultClient();
+		var client = new GameBetsClient(httpClient);
+
+		var actual = await client.GameBetFirstExistAsync(
+			gameProviderId,
+			gameId,
+			walletId,
+			externalBetId,
+			externalCreatedOn);
+
+		Assert.True(actual);
 	}
 }

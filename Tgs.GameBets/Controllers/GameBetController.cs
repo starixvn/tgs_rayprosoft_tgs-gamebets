@@ -58,13 +58,11 @@ public class GameBetController : ControllerBase
 	/// Gets the asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
-	/// <param name="externalBetId">The external bet identifier.</param>
 	/// <param name="source">The source.</param>
 	/// <returns></returns>
-	[HttpGet("{externalBetId}/external-bet", Name = "GameBet_GetByExternalBet")]
+	[HttpGet("external-bet", Name = "GameBet_GetByExternalBet")]
 	public async ValueTask<Common.ViewModels.GameBetInfoViewModel?> GetAsync(
 		[FromServices] IGetService<GameBetSingleByExternalBetQuery, GameBetReslut?> service,
-		string externalBetId,
 		[FromQuery] Common.ViewModels.GameBetByExternalBetViewMode source)
 	{
 		var info = await service.GetAsync(
@@ -72,7 +70,7 @@ public class GameBetController : ControllerBase
 				GameProviderId: source.GameProviderId,
 				GameId: source.GameId,
 				WalletId: source.WalletId,
-				ExternalBetId: externalBetId,
+				ExternalBetId: source.ExternalBetId,
 				ExternalCreatedOn: source.ExternalCreatedOn),
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);

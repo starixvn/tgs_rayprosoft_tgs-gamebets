@@ -1,6 +1,7 @@
 ﻿using Tgs.ServiceUtility;
 
 namespace Tgs.GameBets.Core.ApplicationServices;
+
 internal class GameBetSingleByExternalBetGetService(
 	IGameBetRepository repository) : IGetService<GameBetSingleByExternalBetQuery, GameBetReslut?>
 {

@@ -4,6 +4,7 @@ using Tgs.GameBets.Core.ApplicationServices;
 using Tgs.GameBets.Core.Models;
 
 namespace Tgs.GameBets.Core.UnitTest.ApplicationServices;
+
 public class GameBetSingleGetServiceUnitTest
 {
 	[Fact]

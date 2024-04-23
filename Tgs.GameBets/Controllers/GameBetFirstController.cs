@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Tgs.GameBets.Core;
 using Tgs.GameBets.Core.ApplicationServices;
 
 using Tgs.ServiceUtility;
@@ -56,5 +57,23 @@ public class GameBetFirstController : ControllerBase
 				ClosedOn: source.ClosedOn,
 				UpdatedOn: source.UpdatedOn,
 				AdditionalData: source.AdditionalData),
+			cancellationToken: HttpContext.RequestAborted);
+
+	/// <summary>
+	/// Exists the asynchronous.
+	/// </summary>
+	/// <param name="repository">The repository.</param>
+	/// <param name="source">The source.</param>
+	/// <returns></returns>
+	[HttpGet("exist", Name = "GameBetFirst_Exist")]
+	public ValueTask<bool> ExistAsync(
+		[FromServices] IGameBetFirstRepository repository,
+		[FromQuery] Common.ViewModels.GameBetFirstExistViewMode source)
+		=> repository.ExistAsync(
+			gameProviderId: source.GameProviderId,
+			gameId: source.GameId,
+			walletId: source.WalletId,
+			externalBetId: source.ExternalBetId,
+			externalCreatedOn: source.ExternalCreatedOn,
 			cancellationToken: HttpContext.RequestAborted);
 }

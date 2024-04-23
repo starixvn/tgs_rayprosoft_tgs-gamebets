@@ -11,5 +11,7 @@ public record GameBetByExternalBetViewMode
 	[Required]
 	public Guid WalletId { get; init; }
 	[Required]
+	public string ExternalBetId { get; init; } = default!;
+	[Required]
 	public DateTimeOffset ExternalCreatedOn { get; init; }
 }

@@ -39,7 +39,7 @@ internal partial class GameBetsClient
 		.ConfigureAwait(false);
 
 	public async ValueTask<Common.ViewModels.GameBetInfoViewModel?> GameBetGetByExternalBetAsync(Guid gameProviderId, int gameId, Guid walletId, string externalBetId, DateTimeOffset externalCreatedOn, CancellationToken cancellationToken = default)
-		=> await httpClient.GetAsync($"/game-bet/{externalBetId}/external-bet?gameProviderId={gameProviderId}&gameId={gameId}&walletId={walletId}&externalCreatedOn={externalCreatedOn:u}", cancellationToken)
+		=> await httpClient.GetAsync($"/game-bet/external-bet?gameProviderId={gameProviderId}&gameId={gameId}&walletId={walletId}&externalBetId={externalBetId}&externalCreatedOn={externalCreatedOn:u}", cancellationToken)
 		.ToAsyncEnumerable()
 		.Do(response => response.EnsureSuccessStatusCode())
 		.Where(response => response.StatusCode == System.Net.HttpStatusCode.OK)
