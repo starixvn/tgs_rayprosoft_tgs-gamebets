@@ -1,0 +1,73 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Tgs.GameBets.Core;
+using Tgs.GameBets.Entities;
+
+namespace Tgs.GameBets.Repositories;
+
+internal class GameBetFirstRepository(
+	TgsContext context) : IGameBetFirstRepository
+{
+	public async ValueTask AddAsync(Core.Models.GameBetFirstAddModel source, CancellationToken cancellationToken = default)
+	{
+		var entity = new GameBetFirst
+		{
+			Id = source.Id,
+			GameBetId = source.GameBetId,
+			GameProviderId = source.GameProviderId,
+			GameProviderConfigurationId = source.GameProviderConfigurationId,
+			GameId = source.GameId,
+			ResellerId = source.ResellerId,
+			LicenseeId = source.LicenseeId,
+			BrandId = source.BrandId,
+			PlayerCode = source.PlayerCode,
+			CurrencyCode = source.CurrencyCode,
+			WalletId = source.WalletId,
+			ExternalRoundId = source.ExternalRoundId,
+			ExternalBetId = source.ExternalBetId,
+			ExternalCreatedOn = source.ExternalCreatedOn.UtcDateTime,
+			ExternalClosedOn = source.ExternalClosedOn.UtcDateTime,
+			ExternalPayoffOn = source.ExternalPayoffOn.UtcDateTime,
+			ExternalResettleOn = source.ExternalResettleOn.UtcDateTime,
+			BetState = (int)source.BetState,
+			BetType = (int)source.BetType,
+			FreeGameState = (int)source.FreeGameState,
+			GambleState = (int)source.GambleState,
+			CashoutState = (int)source.CashoutState,
+			ResettleState = (int)source.ResettleState,
+			JackpotState = (int)source.JackpotState,
+			CurrencyRatio = source.CurrencyRatio,
+			Bet = source.Bet,
+			ValidBet = source.ValidBet,
+			Settle = source.Settle,
+			Commission = source.Commission,
+			Turnover = source.Turnover,
+			WinLoss = source.WinLoss,
+			Jackpot = source.Jackpot,
+			CreatedOn = source.CreatedOn.UtcDateTime,
+			ClosedOn = source.ClosedOn.UtcDateTime,
+			UpdatedOn = source.UpdatedOn.UtcDateTime,
+			FirstOn = DateTime.UtcNow,
+			AdditionalData = source.AdditionalData.ToJsonString()
+		};
+
+		_ = await context.GameBetFirsts.AddAsync(
+			entity: entity,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+
+		_ = await context.SaveChangesAsync(
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+	}
+
+	public async ValueTask<bool> ExistAsync(Guid gameProviderId, int gameId, Guid walletId, string externalBetId, DateTimeOffset externalCreatedOn, CancellationToken cancellationToken = default)
+		=> await context.GameBetFirsts
+		.AnyAsync(gbf => gbf.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-1) &&
+			gbf.ExternalCreatedOn < DateTimeOffset.UtcNow &&
+			gbf.GameProviderId == gameProviderId &&
+			gbf.GameId == gameId &&
+			gbf.WalletId == walletId &&
+			gbf.ExternalBetId == externalBetId,
+			cancellationToken: cancellationToken)
+		.ConfigureAwait(false);
+}
