@@ -6,6 +6,7 @@ using NATS.Client.Core;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Tgs.MessageQueue.Nats.Serializers;
 
 var filterInstrumentations = new[] { "html", "ico", "png", "jpg" };
 
@@ -64,7 +65,8 @@ builder.Services.AddGameBets(
 builder.Services
 	.AddKeyedSingleton("Nats", (sp, _) => new NatsConnection(NatsOpts.Default with
 	{
-		Url = builder.Configuration.GetConnectionString("Nats")!
+		Url = builder.Configuration.GetConnectionString("Nats")!,
+		SerializerRegistry = TgsNatsSerializerRegistration.Default
 	}))
 	.AddMessageQueue()
 	.AddNatsMessageQueue(config => config
