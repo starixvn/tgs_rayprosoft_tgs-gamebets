@@ -56,7 +56,7 @@ internal class GameBetUpdateCommandService(
 			ExternalCreatedOn = command.ExternalCreatedOn.ToTimestamp()
 		};
 
-		logger.LogInformation("LogOn:{logOn} Subject:{subject} Mesaage:This game bet is update and published.({publish})",
+		logger.LogWarning("LogOn:{logOn} Subject:{subject} Mesaage:This game bet is update and published.({publish})",
 			DateTime.Now.ToString("o"),
 			Common.GameBetsNatsConst.GameBetUpdatePublish,
 			new
