@@ -5,7 +5,9 @@ namespace Tgs.GameBets.Core.ApplicationServices;
 
 internal class GameBetCommandService(
 	ILogger<GameBetCommandService> logger,
-	IGameBetRepository repository) : ICommandService<GameBetCommand>
+	IGameBetRepository repository,
+	ICommandService<GameBetAddCommand> addService,
+	ICommandService<GameBetUpdateCommand> updateService) : ICommandService<GameBetCommand>
 {
 	public async ValueTask ExecuteAsync(GameBetCommand command, CancellationToken cancellationToken = default)
 	{
@@ -36,9 +38,9 @@ internal class GameBetCommandService(
 
 		if (model is null)
 		{
-			await repository.AddAsync(
-				source: new Models.GameBetAddModel(
-					Id: command.GameBetId,
+			await addService.ExecuteAsync(
+				command: new GameBetAddCommand(
+					GameBetId: command.GameBetId,
 					GameProviderId: command.GameProviderId,
 					GameProviderConfigurationId: command.GameProviderConfigurationId,
 					GameId: command.GameId,
@@ -106,13 +108,19 @@ internal class GameBetCommandService(
 					command.ExternalBetId,
 				});
 
-			await repository.UpdateAsync(
-				source: new Models.GameBetUpdateModel(
-					Id: model.Id,
-					GameProviderId: model.GameProviderId,
-					GameId: model.GameId,
-					WalletId: model.WalletId,
-					ExternalBetId: model.ExternalBetId,
+			await updateService.ExecuteAsync(
+				command: new GameBetUpdateCommand(
+					GameBetId: model.Id,
+					GameProviderId: command.GameProviderId,
+					GameId: command.GameId,
+					ResellerId: command.ResellerId,
+					LicenseeId: command.LicenseeId,
+					BrandId: command.BrandId,
+					PlayerCode: command.PlayerCode,
+					CurrencyCode: command.CurrencyCode,
+					WalletId: command.WalletId,
+					ExternalRoundId: command.ExternalRoundId,
+					ExternalBetId: command.ExternalBetId,
 					ExternalCreatedOn: command.ExternalCreatedOn,
 					ExternalResettleOn: command.ExternalResettleOn,
 					BetState: command.BetState,

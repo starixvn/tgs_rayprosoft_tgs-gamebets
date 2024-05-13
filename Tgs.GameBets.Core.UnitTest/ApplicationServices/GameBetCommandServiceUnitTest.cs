@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using Tgs.GameBets.Core.ApplicationServices;
+using Tgs.ServiceUtility;
 
 namespace Tgs.GameBets.Core.UnitTest.ApplicationServices;
 
@@ -12,6 +13,8 @@ public class GameBetCommandServiceUnitTest
 	{
 		var fakeLog = NullLogger<GameBetCommandService>.Instance;
 		var fakeRepository = Substitute.For<IGameBetRepository>();
+		var fakeAddService = Substitute.For<ICommandService<GameBetAddCommand>>();
+		var fakeUpdateService = Substitute.For<ICommandService<GameBetUpdateCommand>>();
 
 		var externalRoundId = Guid.NewGuid().ToString();
 		var externalBetId = Guid.NewGuid().ToString();
@@ -68,15 +71,17 @@ public class GameBetCommandServiceUnitTest
 
 		var sut = new GameBetCommandService(
 			fakeLog,
-			fakeRepository);
+			fakeRepository,
+			fakeAddService,
+			fakeUpdateService);
 
 		await sut.ExecuteAsync(command);
 
-		_ = fakeRepository
+		_ = fakeAddService
 			.Received(1)
-			.AddAsync(
-			source: Arg.Is(new Models.GameBetAddModel(
-					Id: command.GameBetId,
+			.ExecuteAsync(
+			command: Arg.Is(new GameBetAddCommand(
+				GameBetId: command.GameBetId,
 					GameProviderId: command.GameProviderId,
 					GameProviderConfigurationId: command.GameProviderConfigurationId,
 					GameId: command.GameId,
@@ -110,10 +115,10 @@ public class GameBetCommandServiceUnitTest
 					AdditionalData: command.AdditionalData)),
 			cancellationToken: Arg.Any<CancellationToken>());
 
-		_ = fakeRepository
+		_ = fakeUpdateService
 			.Received(0)
-			.UpdateAsync(
-			source: Arg.Any<Models.GameBetUpdateModel>(),
+			.ExecuteAsync(
+			command: Arg.Any<GameBetUpdateCommand>(),
 			cancellationToken: Arg.Any<CancellationToken>());
 	}
 
@@ -122,6 +127,8 @@ public class GameBetCommandServiceUnitTest
 	{
 		var fakeLog = NullLogger<GameBetCommandService>.Instance;
 		var fakeRepository = Substitute.For<IGameBetRepository>();
+		var fakeAddService = Substitute.For<ICommandService<GameBetAddCommand>>();
+		var fakeUpdateService = Substitute.For<ICommandService<GameBetUpdateCommand>>();
 
 		var externalRoundId = Guid.NewGuid().ToString();
 		var externalBetId = Guid.NewGuid().ToString();
@@ -220,25 +227,33 @@ public class GameBetCommandServiceUnitTest
 
 		var sut = new GameBetCommandService(
 			fakeLog,
-			fakeRepository);
+			fakeRepository,
+			fakeAddService,
+			fakeUpdateService);
 
 		await sut.ExecuteAsync(command);
 
-		_ = fakeRepository
+		_ = fakeAddService
 			.Received(0)
-			.AddAsync(
-			source: Arg.Any<Models.GameBetAddModel>(),
+			.ExecuteAsync(
+			command: Arg.Any<GameBetAddCommand>(),
 			cancellationToken: Arg.Any<CancellationToken>());
 
-		_ = fakeRepository
+		_ = fakeUpdateService
 			.Received(1)
-			.UpdateAsync(
-			source: Arg.Is(new Models.GameBetUpdateModel(
-				Id: model.Id,
-				GameProviderId: model.GameProviderId,
-				GameId: model.GameId,
-				WalletId: model.WalletId,
-				ExternalBetId: model.ExternalBetId,
+			.ExecuteAsync(
+			command: Arg.Is(new GameBetUpdateCommand(
+				GameBetId: model.Id,
+				GameProviderId: command.GameProviderId,
+				GameId: command.GameId,
+				ResellerId: command.ResellerId,
+				LicenseeId: command.LicenseeId,
+				BrandId: command.BrandId,
+				PlayerCode: command.PlayerCode,
+				CurrencyCode: command.CurrencyCode,
+				WalletId: command.WalletId,
+				ExternalRoundId: command.ExternalRoundId,
+				ExternalBetId: command.ExternalBetId,
 				ExternalCreatedOn: command.ExternalCreatedOn,
 				ExternalResettleOn: command.ExternalResettleOn,
 				BetState: command.BetState,
@@ -265,6 +280,8 @@ public class GameBetCommandServiceUnitTest
 	{
 		var fakeLog = NullLogger<GameBetCommandService>.Instance;
 		var fakeRepository = Substitute.For<IGameBetRepository>();
+		var fakeAddService = Substitute.For<ICommandService<GameBetAddCommand>>();
+		var fakeUpdateService = Substitute.For<ICommandService<GameBetUpdateCommand>>();
 
 		var externalRoundId = Guid.NewGuid().ToString();
 		var externalBetId = Guid.NewGuid().ToString();
@@ -363,20 +380,22 @@ public class GameBetCommandServiceUnitTest
 
 		var sut = new GameBetCommandService(
 			fakeLog,
-			fakeRepository);
+			fakeRepository,
+			fakeAddService,
+			fakeUpdateService);
 
 		await sut.ExecuteAsync(command);
 
-		_ = fakeRepository
+		_ = fakeAddService
 			.Received(0)
-			.AddAsync(
-			source: Arg.Any<Models.GameBetAddModel>(),
+			.ExecuteAsync(
+			command: Arg.Any<GameBetAddCommand>(),
 			cancellationToken: Arg.Any<CancellationToken>());
 
-		_ = fakeRepository
+		_ = fakeUpdateService
 			.Received(0)
-			.UpdateAsync(
-			source: Arg.Any<Models.GameBetUpdateModel>(),
+			.ExecuteAsync(
+			command: Arg.Any<GameBetUpdateCommand>(),
 			cancellationToken: Arg.Any<CancellationToken>());
 	}
 }

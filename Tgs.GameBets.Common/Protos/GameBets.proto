@@ -1,0 +1,28 @@
+﻿syntax = "proto3";
+
+import "phoenix/protobuf/guid.proto";
+//import "phoenix/protobuf/decimal.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Tgs.GameBets.Common.Protos";
+
+package GameBets;
+
+// The greeting service definition.
+
+
+// The request message containing the user's name.
+message GameBetPublish {
+    phoenix.protobuf.GuidValue game_bet_id = 1;
+	phoenix.protobuf.GuidValue game_provider_id = 2;
+	int32 game_id = 3;
+	phoenix.protobuf.GuidValue reseller_id = 4;
+	phoenix.protobuf.GuidValue licensee_id = 5;
+	phoenix.protobuf.GuidValue brand_id = 6;
+	string player_code  = 7;
+	string currency_code = 8;
+	phoenix.protobuf.GuidValue wallet_id = 9;
+	string external_round_id = 10;
+	string external_bet_id = 11;
+	google.protobuf.Timestamp external_created_on = 12;
+}
