@@ -2,11 +2,9 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NATS.Client.Core;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Tgs.MessageQueue.Nats.Serializers;
 
 var filterInstrumentations = new[] { "html", "ico", "png", "jpg" };
 
@@ -61,19 +59,6 @@ builder.Services.AddGameBets(
 		var configuration = sp.GetRequiredService<IConfiguration>();
 		options.ConnectionString = configuration.GetConnectionString("Redis")!;
 	});
-
-builder.Services
-	.AddKeyedSingleton("Nats", (sp, _) => new NatsConnection(NatsOpts.Default with
-	{
-		Url = builder.Configuration.GetConnectionString("Nats")!,
-		SerializerRegistry = TgsNatsSerializerRegistration.Default
-	}))
-	.AddMessageQueue()
-	.AddNatsMessageQueue(config => config
-	.ConfigureResolveConnection(sp => sp.GetRequiredKeyedService<NatsConnection>("Nats")))
-	.ClearAllExchanges()
-	.AddNatsGlobPatternExchange(Tgs.GameBets.Common.GameBetsNatsConst.GameBetAddPublish)
-	.AddNatsGlobPatternExchange(Tgs.GameBets.Common.GameBetsNatsConst.GameBetUpdatePublish);
 
 builder.Services
 	.AddOpenTelemetry()

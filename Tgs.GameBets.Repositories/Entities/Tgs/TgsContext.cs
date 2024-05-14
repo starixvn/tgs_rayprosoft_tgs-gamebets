@@ -16,22 +16,13 @@ public partial class TgsContext : DbContext
 
     public virtual DbSet<GameBet> GameBets { get; set; }
 
-    public virtual DbSet<GameBetFirst> GameBetFirsts { get; set; }
-
-    public virtual DbSet<GameBetting> GameBettings { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
             .HasPostgresExtension("ltree")
-            .HasPostgresExtension("pageinspect")
-            .HasPostgresExtension("pg_stat_statements")
-            .HasPostgresExtension("pg_trgm")
-            .HasPostgresExtension("uuid-ossp");
+            .HasPostgresExtension("pg_trgm");
 
         modelBuilder.ApplyConfiguration(new Configurations.GameBetConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.GameBetFirstConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.GameBettingConfiguration());
         OnModelCreatingPartial(modelBuilder);
     }
 
