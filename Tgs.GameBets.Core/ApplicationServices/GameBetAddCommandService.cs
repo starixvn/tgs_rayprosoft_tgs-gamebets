@@ -1,15 +1,10 @@
 ﻿using System.Text.Json.Nodes;
-using Google.Protobuf.WellKnownTypes;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using Valhalla.MessageQueue;
 
 namespace Tgs.GameBets.Core.ApplicationServices;
 
 internal class GameBetAddCommandService(
-	ILogger<GameBetAddCommandService> logger,
-	IGameBetRepository repository,
-	IMessageSender messageSender) : ICommandService<GameBetAddCommand>
+	IGameBetRepository repository) : ICommandService<GameBetAddCommand>
 {
 	public async ValueTask ExecuteAsync(GameBetAddCommand command, CancellationToken cancellationToken = default)
 	{
@@ -47,47 +42,6 @@ internal class GameBetAddCommandService(
 				WinLoss: command.WinLoss,
 				Jackpot: command.Jackpot),
 			additionalData: JsonNode.Parse(command.AdditionalData)!,
-			cancellationToken: cancellationToken)
-			.ConfigureAwait(false);
-
-		var data = new Common.Protos.GameBetPublish
-		{
-			GameBetId = command.GameBetId,
-			GameProviderId = command.GameProviderId,
-			GameId = command.GameId,
-			ResellerId = command.ResellerId,
-			LicenseeId = command.LicenseeId,
-			BrandId = command.BrandId,
-			PlayerCode = command.PlayerCode,
-			CurrencyCode = command.CurrencyCode,
-			WalletId = command.WalletId,
-			ExternalRoundId = command.ExternalRoundId,
-			ExternalBetId = command.ExternalBetId,
-			ExternalCreatedOn = command.ExternalCreatedOn.ToTimestamp()
-		};
-
-		logger.LogInformation("LogOn:{logOn} Subject:{subject} Mesaage:This game bet is added and published.({publish})",
-			DateTime.Now.ToString("o"),
-			Common.GameBetsNatsConst.GameBetAddPublish,
-			new
-			{
-				GameBetId = data.GameBetId.ToGuid(),
-				GameProviderId = data.GameProviderId.ToGuid(),
-				data.GameId,
-				ResellerId = data.ResellerId.ToGuid(),
-				LicenseeId = data.LicenseeId.ToGuid(),
-				BrandId = data.BrandId.ToGuid(),
-				data.PlayerCode,
-				data.CurrencyCode,
-				WalletId = data.WalletId.ToGuid(),
-				data.ExternalRoundId,
-				data.ExternalBetId,
-				ExternalCreatedOn = data.ExternalCreatedOn.ToDateTimeOffset()
-			});
-
-		await messageSender.PublishAsync(
-			subject: Common.GameBetsNatsConst.GameBetAddPublish,
-			data: data,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 	}

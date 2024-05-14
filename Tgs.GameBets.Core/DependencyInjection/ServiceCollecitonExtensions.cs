@@ -10,6 +10,5 @@ public static class ServiceCollecitonExtensions
 		.RegisterAllServiceUtilityTypes(
 			Assembly.GetExecutingAssembly(),
 			ServiceLifetime.Transient)
-		.AddSingleton(TimeProvider.System)
-		.AddSerialNumberGenerator();
+		.AddSingleton(TimeProvider.System);
 }

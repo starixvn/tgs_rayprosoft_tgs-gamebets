@@ -7,16 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Protos\GameBets.proto" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.62.0" />
     <PackageReference Include="PhoenixToolkits.Protobuf.ExtendTypes" Version="0.0.7" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Protobuf Include="Protos\GameBets.proto" GrpcServices="None" />
   </ItemGroup>
 
 </Project>

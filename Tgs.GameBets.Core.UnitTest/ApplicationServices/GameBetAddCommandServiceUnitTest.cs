@@ -3,7 +3,6 @@ using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using Tgs.GameBets.Core.ApplicationServices;
-using Valhalla.MessageQueue;
 
 namespace Tgs.GameBets.Core.UnitTest.ApplicationServices;
 
@@ -12,9 +11,7 @@ public class GameBetAddCommandServiceUnitTest
 	[Fact]
 	public async Task Normal_Process()
 	{
-		var fakeLog = NullLogger<GameBetAddCommandService>.Instance;
 		var fakeRepository = Substitute.For<IGameBetRepository>();
-		var fakeMessageSender = Substitute.For<IMessageSender>();
 
 		var externalRoundId = Guid.NewGuid().ToString();
 		var externalBetId = Guid.NewGuid().ToString();
@@ -61,9 +58,7 @@ public class GameBetAddCommandServiceUnitTest
 			}.ToJsonString());
 
 		var sut = new GameBetAddCommandService(
-			fakeLog,
-			fakeRepository,
-			fakeMessageSender);
+			fakeRepository);
 
 		await sut.ExecuteAsync(command);
 
@@ -103,27 +98,6 @@ public class GameBetAddCommandServiceUnitTest
 				WinLoss: command.WinLoss,
 				Jackpot: command.Jackpot)),
 			additionalData: Arg.Any<JsonNode>(),
-			cancellationToken: Arg.Any<CancellationToken>());
-
-		_ = fakeMessageSender
-			.Received(1)
-			.PublishAsync(
-			subject: Arg.Is(Common.GameBetsNatsConst.GameBetAddPublish),
-			data: Arg.Is(new Common.Protos.GameBetPublish
-			{
-				GameBetId = command.GameBetId,
-				GameProviderId = command.GameProviderId,
-				GameId = command.GameId,
-				ResellerId = command.ResellerId,
-				LicenseeId = command.LicenseeId,
-				BrandId = command.BrandId,
-				PlayerCode = command.PlayerCode,
-				CurrencyCode = command.CurrencyCode,
-				WalletId = command.WalletId,
-				ExternalRoundId = command.ExternalRoundId,
-				ExternalBetId = command.ExternalBetId,
-				ExternalCreatedOn = command.ExternalCreatedOn.ToTimestamp()
-			}),
 			cancellationToken: Arg.Any<CancellationToken>());
 	}
 }
