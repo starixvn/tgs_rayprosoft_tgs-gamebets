@@ -53,7 +53,7 @@ public class GameBetUpdateCommandServiceUnitTest
 			{
 				["ExternalRoundId"] = externalRoundId,
 				["ExternalBetId"] = externalBetId
-			});
+			}.ToJsonString());
 
 		var sut = new GameBetUpdateCommandService(
 			fakeLog,
@@ -87,8 +87,8 @@ public class GameBetUpdateCommandServiceUnitTest
 				Commission: command.Commission,
 				Turnover: command.Turnover,
 				WinLoss: command.WinLoss,
-				Jackpot: command.Jackpot,
-				AdditionalData: command.AdditionalData)),
+				Jackpot: command.Jackpot)),
+			additionalData: Arg.Any<JsonNode>(),
 			cancellationToken: Arg.Any<CancellationToken>());
 
 		_ = fakeMessageSender

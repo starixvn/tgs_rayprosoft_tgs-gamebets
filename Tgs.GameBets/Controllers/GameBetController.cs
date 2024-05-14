@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
+using Microsoft.AspNetCore.Mvc;
 using Tgs.GameBets.Core.ApplicationServices;
 using Tgs.ServiceUtility;
 
@@ -15,11 +17,11 @@ public class GameBetController : ControllerBase
 	/// <param name="source">The source.</param>
 	/// <returns></returns>
 	[HttpPost(Name = "GameBet_Command")]
-	public ValueTask ExecuteAsync(
-		[FromServices] ICommandService<GameBetCommand> service,
+	public ValueTask<Common.Enums.GameBetCommandResult> ExecuteAsync(
+		[FromServices] IGetService<GameBetCommand, Common.Enums.GameBetCommandResult> service,
 		[FromBody] Common.ViewModels.GameBetCommandViewModel source)
-		=> service.ExecuteAsync(
-			command: new GameBetCommand(
+		=> service.GetAsync(
+			query: new GameBetCommand(
 				GameBetId: source.Id,
 				GameProviderId: source.GameProviderId,
 				GameProviderConfigurationId: source.GameProviderConfigurationId,
@@ -51,7 +53,7 @@ public class GameBetController : ControllerBase
 				Turnover: source.Turnover,
 				WinLoss: source.WinLoss,
 				Jackpot: source.Jackpot,
-				AdditionalData: source.AdditionalData),
+				AdditionalData: source.AdditionalData.ToJsonString()),
 			cancellationToken: HttpContext.RequestAborted);
 
 	/// <summary>

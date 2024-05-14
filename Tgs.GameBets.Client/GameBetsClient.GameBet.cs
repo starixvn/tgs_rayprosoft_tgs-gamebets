@@ -4,16 +4,22 @@ namespace Tgs.GameBets.Client;
 
 internal partial class GameBetsClient
 {
-	public async ValueTask GameBetCommandAsync(Common.ViewModels.GameBetCommandViewModel source, CancellationToken cancellationToken = default)
+	public async ValueTask<Common.Enums.GameBetCommandResult> GameBetCommandAsync(Common.ViewModels.GameBetCommandViewModel source, CancellationToken cancellationToken = default)
 	{
 		var requestContent = JsonContent.Create(source, options: _SerializerOptions);
 
-		var response = await httpClient.PostAsync(
+		return await httpClient.PostAsync(
 			"/game-bet",
 			requestContent,
-			cancellationToken).ConfigureAwait(false);
-
-		_ = response.EnsureSuccessStatusCode();
+			cancellationToken)
+			.ToAsyncEnumerable()
+			.Do(response => response.EnsureSuccessStatusCode())
+			.Where(response => response.StatusCode == System.Net.HttpStatusCode.OK)
+			.SelectMany(response => response.Content
+				.ReadFromJsonAsync<Common.Enums.GameBetCommandResult>(_SerializerOptions, cancellationToken)
+				.ToAsyncEnumerable())
+			.FirstOrDefaultAsync(cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
 	}
 
 	public async ValueTask<Common.ViewModels.GameBetInfoViewModel?> GameBetGetAsync(Guid id, CancellationToken cancellationToken = default)

@@ -23,5 +23,4 @@ public record GameBetUpdateModel(
 	decimal Commission,
 	decimal Turnover,
 	decimal WinLoss,
-	decimal Jackpot,
-	JsonNode AdditionalData);
+	decimal Jackpot);

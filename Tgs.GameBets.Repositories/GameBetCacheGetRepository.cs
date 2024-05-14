@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using Tgs.GameBets.Core;
@@ -12,8 +13,8 @@ internal class GameBetCacheGetRepository(
 	TimeSpan expiry,
 	ILogger<GameBetCacheGetRepository> logger) : IGameBetRepository
 {
-	public ValueTask AddAsync(GameBetAddModel source, CancellationToken cancellationToken = default)
-		=> repository.AddAsync(source, cancellationToken);
+	public ValueTask AddAsync(GameBetAddModel source, JsonNode additionalData, CancellationToken cancellationToken = default)
+		=> repository.AddAsync(source, additionalData, cancellationToken);
 
 	public ValueTask<bool> ExistAsync(Guid gameProviderId, int gameId, Guid walletId, string externalBetId, DateTimeOffset externalCreatedOn, CancellationToken cancellationToken = default)
 		=> repository.ExistAsync(gameProviderId, gameId, walletId, externalBetId, externalCreatedOn, cancellationToken);
@@ -47,11 +48,11 @@ internal class GameBetCacheGetRepository(
 		return info;
 	}
 
-	public async ValueTask UpdateAsync(GameBetUpdateModel source, CancellationToken cancellationToken = default)
+	public async ValueTask UpdateAsync(GameBetUpdateModel source, JsonNode additionalData, CancellationToken cancellationToken = default)
 	{
 		try
 		{
-			await repository.UpdateAsync(source, cancellationToken).ConfigureAwait(false);
+			await repository.UpdateAsync(source, additionalData, cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception ex)
 		{
