@@ -30,4 +30,4 @@ public record GameBetUpdateCommand(
 	decimal Turnover,
 	decimal WinLoss,
 	decimal Jackpot,
-	JsonNode AdditionalData);
+	string AdditionalData);

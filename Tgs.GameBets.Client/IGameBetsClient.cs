@@ -2,7 +2,7 @@
 
 public interface IGameBetsClient
 {
-	ValueTask GameBetCommandAsync(Common.ViewModels.GameBetCommandViewModel source, CancellationToken cancellationToken = default);
+	ValueTask<Common.Enums.GameBetCommandResult> GameBetCommandAsync(Common.ViewModels.GameBetCommandViewModel source, CancellationToken cancellationToken = default);
 
 	ValueTask<Common.ViewModels.GameBetInfoViewModel?> GameBetGetByExternalBetAsync(Guid gameProviderId, int gameId, Guid walletId, string externalBetId, DateTimeOffset externalCreatedOn, CancellationToken cancellationToken = default);
 

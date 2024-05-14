@@ -1,4 +1,5 @@
-﻿using Google.Protobuf.WellKnownTypes;
+﻿using System.Text.Json.Nodes;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using Valhalla.MessageQueue;
@@ -35,8 +36,8 @@ internal class GameBetUpdateCommandService(
 				Commission: command.Commission,
 				Turnover: command.Turnover,
 				WinLoss: command.WinLoss,
-				Jackpot: command.Jackpot,
-				AdditionalData: command.AdditionalData),
+				Jackpot: command.Jackpot),
+			additionalData: JsonNode.Parse(command.AdditionalData)!,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 

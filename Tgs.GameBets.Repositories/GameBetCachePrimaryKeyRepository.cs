@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Nodes;
 using StackExchange.Redis;
 using Tgs.GameBets.Core;
 using Tgs.GameBets.Core.Models;
@@ -10,8 +11,8 @@ internal class GameBetCachePrimaryKeyRepository(
 	IDatabase database,
 	TimeSpan expiry) : IGameBetRepository
 {
-	public ValueTask AddAsync(GameBetAddModel source, CancellationToken cancellationToken = default)
-	=> repository.AddAsync(source, cancellationToken);
+	public ValueTask AddAsync(GameBetAddModel source, JsonNode additionalData, CancellationToken cancellationToken = default)
+	=> repository.AddAsync(source, additionalData, cancellationToken);
 
 	public ValueTask<bool> ExistAsync(Guid gameProviderId, int gameId, Guid walletId, string externalBetId, DateTimeOffset externalCreatedOn, CancellationToken cancellationToken = default)
 		=> repository.ExistAsync(gameProviderId, gameId, walletId, externalBetId, externalCreatedOn, cancellationToken);
@@ -19,8 +20,8 @@ internal class GameBetCachePrimaryKeyRepository(
 	public ValueTask<GameBetInfoModel?> GetAsync(Guid gameProviderId, int gameId, Guid walletId, string externalBetId, DateTimeOffset externalCreatedOn, CancellationToken cancellationToken = default)
 		=> repository.GetAsync(gameProviderId, gameId, walletId, externalBetId, externalCreatedOn, cancellationToken);
 
-	public ValueTask UpdateAsync(GameBetUpdateModel source, CancellationToken cancellationToken = default)
-		=> repository.UpdateAsync(source, cancellationToken);
+	public ValueTask UpdateAsync(GameBetUpdateModel source, JsonNode additionalData, CancellationToken cancellationToken = default)
+		=> repository.UpdateAsync(source, additionalData, cancellationToken);
 
 	public async ValueTask<GameBetPrimaryKeyModel?> GetPrimaryKeyAsync(Guid id, DateTimeOffset externalCreatedOn, CancellationToken cancellationToken = default)
 	{

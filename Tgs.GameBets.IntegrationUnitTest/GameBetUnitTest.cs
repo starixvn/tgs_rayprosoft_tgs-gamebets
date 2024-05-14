@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Tgs.GameBets.Client;
@@ -56,11 +58,11 @@ public class GameBetUnitTest
 				["ExternalBetId"] = externalBetId
 			});
 
-		var web = new GameBetsApplicationTest((Action<Microsoft.AspNetCore.Hosting.IWebHostBuilder>?)(builder => _ = builder.ConfigureServices((Action<IServiceCollection>)(services =>
+		var web = new GameBetsApplicationTest(builder => _ = builder.ConfigureServices(services =>
 		{
-			var fakeService = Substitute.For<ICommandService<GameBetCommand>>();
-			_ = fakeService.ExecuteAsync(
-				command: Arg.Is(new GameBetCommand(
+			var fakeService = Substitute.For<IGetService<GameBetCommand, Common.Enums.GameBetCommandResult>>();
+			_ = fakeService.GetAsync(
+				query: Arg.Is(new GameBetCommand(
 					GameBetId: source.Id,
 					GameProviderId: source.GameProviderId,
 					GameProviderConfigurationId: source.GameProviderConfigurationId,
@@ -92,16 +94,19 @@ public class GameBetUnitTest
 					Turnover: source.Turnover,
 					WinLoss: source.WinLoss,
 					Jackpot: source.Jackpot,
-					AdditionalData: source.AdditionalData)),
-				cancellationToken: Arg.Any<CancellationToken>());
+					AdditionalData: source.AdditionalData.ToJsonString())),
+				cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(Common.Enums.GameBetCommandResult.Add);
 
-			_ = services.AddTransient<ICommandService<GameBetCommand>>(_ => fakeService);
-		}))));
+			_ = services.AddTransient(_ => fakeService);
+		}));
 
 		var httpClient = web.CreateDefaultClient();
 		var client = new GameBetsClient(httpClient);
 
-		await client.GameBetCommandAsync(source);
+		var actual = await client.GameBetCommandAsync(source);
+
+		Assert.Equal(Common.Enums.GameBetCommandResult.Add, actual);
 	}
 
 	[Fact]

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text.Json.Nodes;
+using Microsoft.EntityFrameworkCore;
 using Tgs.GameBets.Core;
 using Tgs.GameBets.Entities;
 
@@ -7,7 +8,7 @@ namespace Tgs.GameBets.Repositories;
 internal class GameBetRepository(
 	TgsContext context) : IGameBetRepository
 {
-	public async ValueTask AddAsync(Core.Models.GameBetAddModel source, CancellationToken cancellationToken = default)
+	public async ValueTask AddAsync(Core.Models.GameBetAddModel source, JsonNode additionalData, CancellationToken cancellationToken = default)
 	{
 		var entity = new GameBet
 		{
@@ -47,7 +48,7 @@ internal class GameBetRepository(
 			UpdatedOn = DateTime.UtcNow,
 			ResetState = (int)Common.Enums.ResetState.None,
 			ResetOn = DateTimeOffset.UnixEpoch.UtcDateTime,
-			AdditionalData = source.AdditionalData.ToJsonString()
+			AdditionalData = additionalData.ToJsonString()
 		};
 
 		_ = await context.GameBets.AddAsync(
@@ -139,7 +140,7 @@ internal class GameBetRepository(
 			cancellationToken: cancellationToken)
 		.ConfigureAwait(false);
 
-	public async ValueTask UpdateAsync(Core.Models.GameBetUpdateModel source, CancellationToken cancellationToken = default)
+	public async ValueTask UpdateAsync(Core.Models.GameBetUpdateModel source, JsonNode additionalData, CancellationToken cancellationToken = default)
 	{
 		var entity = await context.GameBets
 			.Where(gb => gb.ExternalCreatedOn >= source.ExternalCreatedOn.AddDays(-3) &&
@@ -165,7 +166,7 @@ internal class GameBetRepository(
 		entity.ResetState = (int)Common.Enums.ResetState.Reset;
 		entity.ResetOn = DateTime.UtcNow;
 		entity.UpdatedOn = DateTime.UtcNow;
-		entity.AdditionalData = source.AdditionalData.ToJsonString();
+		entity.AdditionalData = additionalData.ToJsonString();
 
 		_ = context.GameBets.Update(entity: entity);
 
