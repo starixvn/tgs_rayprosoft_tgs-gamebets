@@ -8,9 +8,7 @@ data:
     {
       "Logging": {
         "LogLevel": {
-          "Default": "Warning",
-          "Tgs.GameBets.Core.ApplicationServices.GameBetAddCommandService": "Information",
-          "Tgs.GameBets.Core.ApplicationServices.GameBetUpdateCommandService": "Information"
+          "Default": "Warning"
         }
       }
     }
