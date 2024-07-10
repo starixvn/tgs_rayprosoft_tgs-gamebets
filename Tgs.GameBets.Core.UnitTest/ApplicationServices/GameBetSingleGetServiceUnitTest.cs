@@ -84,7 +84,7 @@ public class GameBetSingleGetServiceUnitTest
 			{
 				["ExternalRoundId"] = externalRoundId,
 				["ExternalBetId"] = externalBetId
-			});
+			}.ToJsonString());
 		_ = fakeRepository.GetAsync(
 			gameProviderId: Arg.Is(gameBetPrimaryKey.GameProviderId),
 			gameId: Arg.Is(gameBetPrimaryKey.GameId),
@@ -132,7 +132,7 @@ public class GameBetSingleGetServiceUnitTest
 		Assert.Equal(gameBetInfo.Turnover, actual.Turnover);
 		Assert.Equal(gameBetInfo.WinLoss, actual.WinLoss);
 		Assert.Equal(gameBetInfo.Jackpot, actual.Jackpot);
-		Assert.Equal(gameBetInfo.AdditionalData.ToJsonString(), actual.AdditionalData.ToJsonString());
+		Assert.Equal(gameBetInfo.AdditionalData, actual.AdditionalData.ToJsonString());
 	}
 
 	[Fact]
@@ -216,7 +216,7 @@ public class GameBetSingleGetServiceUnitTest
 			{
 				["ExternalRoundId"] = externalRoundId,
 				["ExternalBetId"] = externalBetId
-			});
+			}.ToJsonString());
 		_ = fakeRepository.GetAsync(
 			gameProviderId: Arg.Is(gameBetPrimaryKey.GameProviderId),
 			gameId: Arg.Is(gameBetPrimaryKey.GameId),
@@ -264,7 +264,7 @@ public class GameBetSingleGetServiceUnitTest
 		Assert.Equal(gameBetInfo.Turnover, actual.Turnover);
 		Assert.Equal(gameBetInfo.WinLoss, actual.WinLoss);
 		Assert.Equal(gameBetInfo.Jackpot, actual.Jackpot);
-		Assert.Equal(gameBetInfo.AdditionalData.ToJsonString(), actual.AdditionalData.ToJsonString());
+		Assert.Equal(gameBetInfo.AdditionalData, actual.AdditionalData.ToJsonString());
 	}
 
 	[Fact]

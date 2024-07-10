@@ -1,4 +1,5 @@
-﻿using Tgs.ServiceUtility;
+﻿using System.Text.Json.Nodes;
+using Tgs.ServiceUtility;
 
 namespace Tgs.GameBets.Core.ApplicationServices;
 
@@ -55,6 +56,6 @@ internal class GameBetSingleByExternalBetGetService(
 				UpdatedOn: gameBetInfo.UpdatedOn,
 				ResetState: gameBetInfo.ResetState,
 				ResetOn: gameBetInfo.ResetOn,
-				AdditionalData: gameBetInfo.AdditionalData);
+				AdditionalData: JsonNode.Parse(gameBetInfo.AdditionalData) ?? new JsonObject { });
 	}
 }

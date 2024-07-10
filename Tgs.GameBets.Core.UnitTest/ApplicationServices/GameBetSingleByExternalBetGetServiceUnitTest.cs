@@ -70,7 +70,7 @@ public class GameBetSingleByExternalBetGetServiceUnitTest
 			{
 				["ExternalRoundId"] = externalRoundId,
 				["ExternalBetId"] = externalBetId
-			});
+			}.ToJsonString());
 		_ = fakeRepository.GetAsync(
 			gameProviderId: Arg.Is(query.GameProviderId),
 			gameId: Arg.Is(query.GameId),
@@ -117,7 +117,7 @@ public class GameBetSingleByExternalBetGetServiceUnitTest
 		Assert.Equal(gameBetInfo.Turnover, actual.Turnover);
 		Assert.Equal(gameBetInfo.WinLoss, actual.WinLoss);
 		Assert.Equal(gameBetInfo.Jackpot, actual.Jackpot);
-		Assert.Equal(gameBetInfo.AdditionalData.ToJsonString(), actual.AdditionalData.ToJsonString());
+		Assert.Equal(gameBetInfo.AdditionalData, actual.AdditionalData.ToJsonString());
 	}
 
 	[Fact]
