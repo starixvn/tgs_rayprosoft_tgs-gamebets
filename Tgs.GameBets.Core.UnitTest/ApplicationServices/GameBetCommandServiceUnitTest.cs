@@ -217,7 +217,7 @@ public class GameBetCommandServiceUnitTest
 			{
 				["ExternalRoundId"] = externalRoundId,
 				["ExternalBetId"] = externalBetId
-			});
+			}.ToJsonString());
 		_ = fakeRepository.GetAsync(
 			gameProviderId: Arg.Is(command.GameProviderId),
 			gameId: Arg.Is(command.GameId),
@@ -372,7 +372,7 @@ public class GameBetCommandServiceUnitTest
 			{
 				["ExternalRoundId"] = externalRoundId,
 				["ExternalBetId"] = externalBetId
-			});
+			}.ToJsonString());
 		_ = fakeRepository.GetAsync(
 			gameProviderId: Arg.Is(command.GameProviderId),
 			gameId: Arg.Is(command.GameId),

@@ -38,4 +38,4 @@ public record GameBetInfoModel(
 	DateTimeOffset UpdatedOn,
 	Common.Enums.ResetState ResetState,
 	DateTimeOffset ResetOn,
-	JsonNode AdditionalData);
+	string AdditionalData);
