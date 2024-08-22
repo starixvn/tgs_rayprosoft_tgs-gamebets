@@ -17,9 +17,9 @@ builder.Logging
 		options.ParseStateValues = true;
 		_ = options.AddFluentdForwardExporter(fluentOptions =>
 		{
-			var nodeIp = builder.Configuration.GetValue<string>("NODE_IP")!;
+			var nodeIp = builder.Configuration.GetValue<string>("Otel:NodeIp")!;
 			fluentOptions.Host = nodeIp;
-			fluentOptions.Tag = builder.Configuration.GetValue<string>("OTEL_SERVICE_NAME")!;
+			fluentOptions.Tag = builder.Configuration.GetValue<string>("Otel:ServiceName")!;
 			fluentOptions.UseMessagePack();
 		});
 	});
@@ -62,7 +62,7 @@ builder.Services.AddGameBets(
 
 builder.Services
 	.AddOpenTelemetry()
-	.ConfigureResource(_ => _.AddService(builder.Configuration.GetValue<string>("Otel:ServiceName")))
+	.ConfigureResource(_ => _.AddService(builder.Configuration.GetValue<string>("Otel:ServiceName")!))
 	.WithTracing(tracerProviderBuilder => tracerProviderBuilder
 		.SetResourceBuilder(ResourceBuilder.CreateDefault()
 			.AddEnvironmentVariableDetector())
@@ -81,7 +81,7 @@ builder.Services
 		.AddGrpcClientInstrumentation()
 		.AddGrpcCoreInstrumentation()
 		.AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
-		.AddOtlpExporter(options => options.Endpoint = builder.Configuration.GetValue<Uri>("Otel:Collector")))
+		.AddOtlpExporter(options => options.Endpoint = builder.Configuration.GetValue<Uri>("Otel:Collector")!))
 	.WithMetrics(meterBuiler => meterBuiler
 	.SetResourceBuilder(ResourceBuilder.CreateDefault()
 		.AddEnvironmentVariableDetector())
