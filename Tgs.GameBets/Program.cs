@@ -5,10 +5,13 @@ using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Tgs.GameBets.Middlewares;
 
 var filterInstrumentations = new[] { "html", "ico", "png", "jpg" };
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.UseSentry();
 
 builder.Logging
 	.AddOpenTelemetry(options =>
@@ -93,14 +96,17 @@ builder.Services
 	.AddServiceUtiltiyInterceptors();
 
 builder.Services.AddHealthChecks();
+builder.Services.AddScoped<ExceptionMiddleware>();
 
 var app = builder.Build();
 
-_ = app.UseSwagger();
-_ = app.UseSwaggerUI();
+app.UseMiddleware<ExceptionMiddleware>();
 
-_ = app.MapControllers();
-_ = app.MapSwagger();
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.MapControllers();
+app.MapSwagger();
 
 app.UseHealthChecks("/health");
 app.MapHealthChecks("/");
