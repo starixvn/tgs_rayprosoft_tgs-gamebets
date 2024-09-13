@@ -16,7 +16,6 @@ public static class ServiceCollecitonExtensions
 		.AddDbContext<TgsContext>(dbContextOptions)
 		.AddTransient<IGameBetRepository, GameBetRepository>()
 		.Decorate<IGameBetRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<GameBetCacheLockedRepository>(sp, innerRepository, redisDatabaseResolver(sp), TimeSpan.FromMinutes(1)))
-		.Decorate<IGameBetRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<GameBetCacheExistRepository>(sp, innerRepository, redisDatabaseResolver(sp), TimeSpan.FromMinutes(1)))
-		.Decorate<IGameBetRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<GameBetCacheGetRepository>(sp, innerRepository, redisDatabaseResolver(sp), TimeSpan.FromMinutes(5)))
-		.Decorate<IGameBetRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<GameBetCachePrimaryKeyRepository>(sp, innerRepository, redisDatabaseResolver(sp), TimeSpan.FromMinutes(5)));
+		.AddTransient<IGameBetMajorRepository, GameBetMajorRepository>()
+		.Decorate<IGameBetMajorRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<GameBetMajorCacheLockedRepository>(sp, innerRepository, redisDatabaseResolver(sp), TimeSpan.FromMinutes(1)));
 }

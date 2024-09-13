@@ -19,6 +19,10 @@
   "T4TemplatePath": null,
   "Tables": [
     {
+      "Name": "dbo.game_bet_majors",
+      "ObjectType": 0
+    },
+    {
       "Name": "dbo.game_bets",
       "ObjectType": 0
     }
