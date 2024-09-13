@@ -1,8 +1,6 @@
-﻿using System.Text.Json;
-using System.Text.Json.Nodes;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Tgs.GameBets.Core.ApplicationServices;
-using Tgs.ServiceUtility;
+using Tgs.GameBets.Core.ApplicationServices.GameBets;
 
 namespace Tgs.GameBets.Controllers;
 
@@ -11,17 +9,17 @@ namespace Tgs.GameBets.Controllers;
 public class GameBetController : ControllerBase
 {
 	/// <summary>
-	/// Executes the asynchronous.
+	/// Games the bet command asynchronous.
 	/// </summary>
-	/// <param name="service">The service.</param>
+	/// <param name="mediator">The mediator.</param>
 	/// <param name="source">The source.</param>
 	/// <returns></returns>
-	[HttpPost(Name = "GameBet_Command")]
-	public ValueTask<Common.Enums.GameBetCommandResult> ExecuteAsync(
-		[FromServices] IGetService<GameBetCommand, Common.Enums.GameBetCommandResult> service,
+	[HttpPost()]
+	public async ValueTask<Common.Enums.GameBetCommandResult> GameBetCommandAsync(
+		[FromServices] IMediator mediator,
 		[FromBody] Common.ViewModels.GameBetCommandViewModel source)
-		=> service.GetAsync(
-			query: new GameBetCommand(
+		=> await mediator.Send(
+			request: new GameBetCommandRequest(
 				GameBetId: source.Id,
 				GameProviderId: source.GameProviderId,
 				GameProviderConfigurationId: source.GameProviderConfigurationId,
@@ -54,21 +52,22 @@ public class GameBetController : ControllerBase
 				WinLoss: source.WinLoss,
 				Jackpot: source.Jackpot,
 				AdditionalData: source.AdditionalData.ToJsonString()),
-			cancellationToken: HttpContext.RequestAborted);
+			cancellationToken: HttpContext.RequestAborted)
+		.ConfigureAwait(false);
 
 	/// <summary>
-	/// Gets the asynchronous.
+	/// Games the bet get external asynchronous.
 	/// </summary>
-	/// <param name="service">The service.</param>
+	/// <param name="mediator">The mediator.</param>
 	/// <param name="source">The source.</param>
 	/// <returns></returns>
-	[HttpGet("external-bet", Name = "GameBet_GetByExternalBet")]
-	public async ValueTask<Common.ViewModels.GameBetInfoViewModel?> GetAsync(
-		[FromServices] IGetService<GameBetSingleByExternalBetQuery, GameBetReslut?> service,
-		[FromQuery] Common.ViewModels.GameBetByExternalBetViewMode source)
+	[HttpGet("external-bet")]
+	public async ValueTask<Common.ViewModels.GameBetInfoViewModel?> GameBetGetExternalAsync(
+		[FromServices] IMediator mediator,
+		[FromQuery] Common.ViewModels.GameBetGetExternalViewModel source)
 	{
-		var info = await service.GetAsync(
-			query: new GameBetSingleByExternalBetQuery(
+		var response = await mediator.Send(
+			request: new GameBetGetExternalRequest(
 				GameProviderId: source.GameProviderId,
 				GameId: source.GameId,
 				WalletId: source.WalletId,
@@ -77,107 +76,111 @@ public class GameBetController : ControllerBase
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
 
-		return info is null
+		return response is null
 			? null
 			: new Common.ViewModels.GameBetInfoViewModel(
-				Id: info.Id,
-				GameProviderId: info.GameProviderId,
-				GameProviderConfigurationId: info.GameProviderConfigurationId,
-				GameId: info.GameId,
-				ResellerId: info.ResellerId,
-				LicenseeId: info.LicenseeId,
-				BrandId: info.BrandId,
-				PlayerCode: info.PlayerCode,
-				CurrencyCode: info.CurrencyCode,
-				WalletId: info.WalletId,
-				ExternalRoundId: info.ExternalRoundId,
-				ExternalBetId: info.ExternalBetId,
-				ExternalCreatedOn: info.ExternalCreatedOn,
-				ExternalClosedOn: info.ExternalClosedOn,
-				ExternalPayoffOn: info.ExternalPayoffOn,
-				ExternalResettleOn: info.ExternalResettleOn,
-				BetState: info.BetState,
-				BetType: info.BetType,
-				FreeGameState: info.FreeGameState,
-				GambleState: info.GambleState,
-				CashoutState: info.CashoutState,
-				ResettleState: info.ResettleState,
-				JackpotState: info.JackpotState,
-				CurrencyRatio: info.CurrencyRatio,
-				Bet: info.Bet,
-				ValidBet: info.ValidBet,
-				Settle: info.Settle,
-				Commission: info.Commission,
-				Turnover: info.Turnover,
-				WinLoss: info.WinLoss,
-				Jackpot: info.Jackpot,
-				CreatedOn: info.CreatedOn,
-				ClosedOn: info.ClosedOn,
-				UpdatedOn: info.UpdatedOn,
-				ResetState: info.ResetState,
-				ResetOn: info.ResetOn,
-				AdditionalData: info.AdditionalData);
+				Id: response.Id,
+				GameProviderId: response.GameProviderId,
+				GameProviderConfigurationId: response.GameProviderConfigurationId,
+				GameId: response.GameId,
+				ResellerId: response.ResellerId,
+				LicenseeId: response.LicenseeId,
+				BrandId: response.BrandId,
+				PlayerCode: response.PlayerCode,
+				CurrencyCode: response.CurrencyCode,
+				WalletId: response.WalletId,
+				ExternalRoundId: response.ExternalRoundId,
+				ExternalBetId: response.ExternalBetId,
+				ExternalCreatedOn: response.ExternalCreatedOn,
+				ExternalClosedOn: response.ExternalClosedOn,
+				ExternalPayoffOn: response.ExternalPayoffOn,
+				ExternalResettleOn: response.ExternalResettleOn,
+				BetState: response.BetState,
+				BetType: response.BetType,
+				FreeGameState: response.FreeGameState,
+				GambleState: response.GambleState,
+				CashoutState: response.CashoutState,
+				ResettleState: response.ResettleState,
+				JackpotState: response.JackpotState,
+				CurrencyRatio: response.CurrencyRatio,
+				Bet: response.Bet,
+				ValidBet: response.ValidBet,
+				Settle: response.Settle,
+				Commission: response.Commission,
+				Turnover: response.Turnover,
+				WinLoss: response.WinLoss,
+				Jackpot: response.Jackpot,
+				CreatedOn: response.CreatedOn,
+				ClosedOn: response.ClosedOn,
+				UpdatedOn: response.UpdatedOn,
+				ResetState: response.ResetState,
+				ResetOn: response.ResetOn,
+				AdditionalData: response.AdditionalData);
 	}
 
 	/// <summary>
-	/// Gets the asynchronous.
+	/// Games the bet get identifier asynchronous.
 	/// </summary>
-	/// <param name="service">The service.</param>
+	/// <param name="mediator">The mediator.</param>
+	/// <param name="timeProvider">The time provider.</param>
 	/// <param name="id">The identifier.</param>
-	/// <param name="externalCreatedOn">The external created on.</param>
+	/// <param name="source">The source.</param>
 	/// <returns></returns>
-	[HttpGet("{id:guid}", Name = "GameBet_Get")]
-	public async ValueTask<Common.ViewModels.GameBetInfoViewModel?> GetAsync(
-		[FromServices] IGetService<GameBetSingleQuery, GameBetReslut?> service,
+	[HttpGet("{id:guid}")]
+	public async ValueTask<Common.ViewModels.GameBetInfoViewModel?> GameBetGetIdAsync(
+		[FromServices] IMediator mediator,
+		[FromServices] TimeProvider timeProvider,
 		Guid id,
-		[FromQuery] DateTimeOffset? externalCreatedOn)
+		[FromQuery] Common.ViewModels.GameBetGetIdViewModel source)
 	{
-		var info = await service.GetAsync(
-			query: new GameBetSingleQuery(
+		var externalCreatedOn = source.ExternalCreatedOn ?? timeProvider.GetUtcNow().AddDays(-45);
+
+		var response = await mediator.Send(
+			request: new GameBetGetIdRequest(
 				Id: id,
 				ExternalCreatedOn: externalCreatedOn),
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
 
-		return info is null
+		return response is null
 			? null
 			: new Common.ViewModels.GameBetInfoViewModel(
-				Id: info.Id,
-				GameProviderId: info.GameProviderId,
-				GameProviderConfigurationId: info.GameProviderConfigurationId,
-				GameId: info.GameId,
-				ResellerId: info.ResellerId,
-				LicenseeId: info.LicenseeId,
-				BrandId: info.BrandId,
-				PlayerCode: info.PlayerCode,
-				CurrencyCode: info.CurrencyCode,
-				WalletId: info.WalletId,
-				ExternalRoundId: info.ExternalRoundId,
-				ExternalBetId: info.ExternalBetId,
-				ExternalCreatedOn: info.ExternalCreatedOn,
-				ExternalClosedOn: info.ExternalClosedOn,
-				ExternalPayoffOn: info.ExternalPayoffOn,
-				ExternalResettleOn: info.ExternalResettleOn,
-				BetState: info.BetState,
-				BetType: info.BetType,
-				FreeGameState: info.FreeGameState,
-				GambleState: info.GambleState,
-				CashoutState: info.CashoutState,
-				ResettleState: info.ResettleState,
-				JackpotState: info.JackpotState,
-				CurrencyRatio: info.CurrencyRatio,
-				Bet: info.Bet,
-				ValidBet: info.ValidBet,
-				Settle: info.Settle,
-				Commission: info.Commission,
-				Turnover: info.Turnover,
-				WinLoss: info.WinLoss,
-				Jackpot: info.Jackpot,
-				CreatedOn: info.CreatedOn,
-				ClosedOn: info.ClosedOn,
-				UpdatedOn: info.UpdatedOn,
-				ResetState: info.ResetState,
-				ResetOn: info.ResetOn,
-				AdditionalData: info.AdditionalData);
+				Id: response.Id,
+				GameProviderId: response.GameProviderId,
+				GameProviderConfigurationId: response.GameProviderConfigurationId,
+				GameId: response.GameId,
+				ResellerId: response.ResellerId,
+				LicenseeId: response.LicenseeId,
+				BrandId: response.BrandId,
+				PlayerCode: response.PlayerCode,
+				CurrencyCode: response.CurrencyCode,
+				WalletId: response.WalletId,
+				ExternalRoundId: response.ExternalRoundId,
+				ExternalBetId: response.ExternalBetId,
+				ExternalCreatedOn: response.ExternalCreatedOn,
+				ExternalClosedOn: response.ExternalClosedOn,
+				ExternalPayoffOn: response.ExternalPayoffOn,
+				ExternalResettleOn: response.ExternalResettleOn,
+				BetState: response.BetState,
+				BetType: response.BetType,
+				FreeGameState: response.FreeGameState,
+				GambleState: response.GambleState,
+				CashoutState: response.CashoutState,
+				ResettleState: response.ResettleState,
+				JackpotState: response.JackpotState,
+				CurrencyRatio: response.CurrencyRatio,
+				Bet: response.Bet,
+				ValidBet: response.ValidBet,
+				Settle: response.Settle,
+				Commission: response.Commission,
+				Turnover: response.Turnover,
+				WinLoss: response.WinLoss,
+				Jackpot: response.Jackpot,
+				CreatedOn: response.CreatedOn,
+				ClosedOn: response.ClosedOn,
+				UpdatedOn: response.UpdatedOn,
+				ResetState: response.ResetState,
+				ResetOn: response.ResetOn,
+				AdditionalData: response.AdditionalData);
 	}
 }

@@ -16,6 +16,8 @@ public partial class TgsContext : DbContext
 
     public virtual DbSet<GameBet> GameBets { get; set; }
 
+    public virtual DbSet<GameBetMajor> GameBetMajors { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -23,6 +25,7 @@ public partial class TgsContext : DbContext
             .HasPostgresExtension("pg_trgm");
 
         modelBuilder.ApplyConfiguration(new Configurations.GameBetConfiguration());
+        modelBuilder.ApplyConfiguration(new Configurations.GameBetMajorConfiguration());
         OnModelCreatingPartial(modelBuilder);
     }
 

@@ -1,16 +1,15 @@
 ﻿using System.Text.Json.Nodes;
+using Tgs.GameBets.Core.Models.GameBets;
 
 namespace Tgs.GameBets.Core;
 
 public interface IGameBetRepository
 {
-	ValueTask AddAsync(Models.GameBetAddModel source, JsonNode additionalData, CancellationToken cancellationToken = default);
+	ValueTask AddAsync(GameBetAddModel source, CancellationToken cancellationToken = default);
 
-	ValueTask<bool> ExistAsync(Guid gameProviderId, int gameId, Guid walletId, string externalBetId, DateTimeOffset externalCreatedOn, CancellationToken cancellationToken = default);
+	ValueTask<GameBetInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default);
 
-	ValueTask<Models.GameBetInfoModel?> GetAsync(Guid gameProviderId, int gameId, Guid walletId, string externalBetId, DateTimeOffset externalCreatedOn, CancellationToken cancellationToken = default);
+	ValueTask<GameBetInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid id, CancellationToken cancellationToken = default);
 
-	ValueTask<Models.GameBetPrimaryKeyModel?> GetPrimaryKeyAsync(Guid id, DateTimeOffset externalCreatedOn, CancellationToken cancellationToken = default);
-
-	ValueTask UpdateAsync(Models.GameBetUpdateModel source, JsonNode additionalData, CancellationToken cancellationToken = default);
+	ValueTask UpdateAsync(GameBetUpdateModel source, CancellationToken cancellationToken = default);
 }

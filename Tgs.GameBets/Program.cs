@@ -2,9 +2,12 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Npgsql;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Tgs.GameBets;
 
 var filterInstrumentations = new[] { "html", "ico", "png", "jpg" };
 
@@ -44,21 +47,27 @@ builder.Services.AddSwaggerGen(c =>
 	}
 });
 
-builder.Services.AddGameBets(
-	(sp, dbBuilder) =>
+builder.Services
+	.AddOptions<RedisOptions>()
+	.Configure((RedisOptions options, IServiceProvider sp) =>
+	{
+		var configuration = sp.GetRequiredService<IConfiguration>();
+		options.ConnectionString = configuration.GetConnectionString("Redis")!;
+	})
+	.Services
+	.AddSingleton<RedisConnectionManager>()
+	.AddGameBetsCore()
+	.AddGameBetsRepositories(
+	(IServiceProvider sp, DbContextOptionsBuilder dbBuilder) =>
 	{
 		var config = sp.GetRequiredService<IConfiguration>();
 		_ = dbBuilder.UseNpgsql(config.GetConnectionString("Tgs"),
 			builder => builder.EnableRetryOnFailure(
-					maxRetryCount: 5,
-					maxRetryDelay: TimeSpan.FromSeconds(10),
-					errorCodesToAdd: null));
+				maxRetryCount: 5,
+				maxRetryDelay: TimeSpan.FromSeconds(10),
+				errorCodesToAdd: null));
 	},
-	(options, sp) =>
-	{
-		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.ConnectionString = configuration.GetConnectionString("Redis")!;
-	});
+	(IServiceProvider sp) => sp.GetRequiredService<RedisConnectionManager>().Database);
 
 builder.Services
 	.AddOpenTelemetry()
@@ -68,6 +77,7 @@ builder.Services
 		.AddSource("Tgs.*")
 		.AddSource("TGS.*")
 		.AddSource("Valhalla.*")
+		.AddSource("MediatR.*")
 		.AddAspNetCoreInstrumentation(options => options.Filter =
 		httpContext => !httpContext.Request.Path.HasValue
 			|| !httpContext.Request.Path.StartsWithSegments("/swagger")
@@ -76,9 +86,8 @@ builder.Services
 			&& !httpContext.Request.Path.StartsWithSegments("/hangfire")
 			&& !httpContext.Request.Path.StartsWithSegments("/metrics")
 			&& !filterInstrumentations.Any(ext => httpContext.Request.Path.Value.EndsWith($".{ext}")))
+		.AddNpgsql()
 		.AddHttpClientInstrumentation()
-		.AddGrpcClientInstrumentation()
-		.AddGrpcCoreInstrumentation()
 		.AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
 		.AddOtlpExporter())
 	.WithMetrics(meterBuiler => meterBuiler

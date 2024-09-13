@@ -7,8 +7,7 @@ public static class ServiceCollecitonExtensions
 	public static IServiceCollection AddGameBetsCore(
 		this IServiceCollection services)
 		=> services
-		.RegisterAllServiceUtilityTypes(
-			Assembly.GetExecutingAssembly(),
-			ServiceLifetime.Transient)
-		.AddSingleton(TimeProvider.System);
+		.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()))
+		.AddSingleton(TimeProvider.System)
+		.AddSerialNumberGenerator();
 }
