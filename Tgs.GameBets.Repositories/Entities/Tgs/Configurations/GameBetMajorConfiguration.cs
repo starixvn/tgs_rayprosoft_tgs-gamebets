@@ -17,19 +17,37 @@ namespace Tgs.GameBets.Entities.Configurations
 
             entity.ToTable("game_bet_majors", "dbo");
 
-            entity.HasIndex(e => new { e.ExternalCreatedOn, e.ClosedOn }, "ix_game_bet_majors_e_crt_closed_on");
-
-            entity.HasIndex(e => new { e.ExternalCreatedOn, e.CreatedOn }, "ix_game_bet_majors_e_crt_created_on");
-
-            entity.HasIndex(e => new { e.ExternalCreatedOn, e.ExternalClosedOn }, "ix_game_bet_majors_e_crt_external_closed_on");
-
-            entity.HasIndex(e => new { e.ExternalCreatedOn, e.ExternalPayoffOn }, "ix_game_bet_majors_e_crt_external_payoff_on");
-
-            entity.HasIndex(e => new { e.ExternalCreatedOn, e.Id }, "ix_game_bet_majors_e_crt_id");
-
-            entity.HasIndex(e => new { e.ExternalCreatedOn, e.UpdatedOn }, "ix_game_bet_majors_e_crt_updated_on");
-
             entity.HasIndex(e => e.ExternalCreatedOn, "ix_game_bet_majors_external_created_on");
+
+            entity.HasIndex(e => new { e.ExternalCreatedOn, e.BrandId }, "ix_game_bet_majors_external_created_on_brand_id");
+
+            entity.HasIndex(e => new { e.ExternalCreatedOn, e.ClosedOn }, "ix_game_bet_majors_external_created_on_closed_on");
+
+            entity.HasIndex(e => new { e.ExternalCreatedOn, e.CreatedOn }, "ix_game_bet_majors_external_created_on_created_on");
+
+            entity.HasIndex(e => new { e.ExternalCreatedOn, e.CurrencyCode }, "ix_game_bet_majors_external_created_on_currency_code");
+
+            entity.HasIndex(e => new { e.ExternalCreatedOn, e.ExternalBetId }, "ix_game_bet_majors_external_created_on_external_bet_id");
+
+            entity.HasIndex(e => new { e.ExternalCreatedOn, e.ExternalClosedOn }, "ix_game_bet_majors_external_created_on_external_closed_on");
+
+            entity.HasIndex(e => new { e.ExternalCreatedOn, e.ExternalPayoffOn }, "ix_game_bet_majors_external_created_on_external_payoff_on");
+
+            entity.HasIndex(e => new { e.ExternalCreatedOn, e.ExternalResettleOn }, "ix_game_bet_majors_external_created_on_external_resettle_on");
+
+            entity.HasIndex(e => new { e.ExternalCreatedOn, e.ExternalRoundId }, "ix_game_bet_majors_external_created_on_external_round_id");
+
+            entity.HasIndex(e => new { e.ExternalCreatedOn, e.GameId }, "ix_game_bet_majors_external_created_on_game_id");
+
+            entity.HasIndex(e => new { e.ExternalCreatedOn, e.GameProviderId }, "ix_game_bet_majors_external_created_on_game_provider_id");
+
+            entity.HasIndex(e => new { e.ExternalCreatedOn, e.Id }, "ix_game_bet_majors_external_created_on_id");
+
+            entity.HasIndex(e => new { e.ExternalCreatedOn, e.PlayerCode }, "ix_game_bet_majors_external_created_on_player_code");
+
+            entity.HasIndex(e => new { e.ExternalCreatedOn, e.UpdatedOn }, "ix_game_bet_majors_external_created_on_updated_on");
+
+            entity.HasIndex(e => new { e.ExternalCreatedOn, e.WalletId }, "ix_game_bet_majors_external_created_on_wallet_id");
 
             entity.Property(e => e.ExternalCreatedOn)
                 .HasDefaultValueSql("'1970-01-01 00:00:00+00'::timestamp with time zone")
@@ -90,6 +108,7 @@ namespace Tgs.GameBets.Entities.Configurations
                 .HasColumnName("created_on");
             entity.Property(e => e.CurrencyCode)
                 .HasMaxLength(16)
+                .HasDefaultValueSql("''::character varying")
                 .HasComment("貨幣代碼")
                 .HasColumnName("currency_code");
             entity.Property(e => e.CurrencyRatio)
@@ -115,6 +134,7 @@ namespace Tgs.GameBets.Entities.Configurations
                 .HasColumnName("external_resettle_on");
             entity.Property(e => e.ExternalRoundId)
                 .HasMaxLength(255)
+                .HasDefaultValueSql("''::character varying")
                 .HasComment("三方局/回合識別碼")
                 .HasColumnName("external_round_id");
             entity.Property(e => e.FreeGameState)
@@ -144,6 +164,7 @@ namespace Tgs.GameBets.Entities.Configurations
                 .HasColumnName("licensee_id");
             entity.Property(e => e.PlayerCode)
                 .HasMaxLength(16)
+                .HasDefaultValueSql("''::character varying")
                 .HasComment("玩家代碼")
                 .HasColumnName("player_code");
             entity.Property(e => e.ResellerId)

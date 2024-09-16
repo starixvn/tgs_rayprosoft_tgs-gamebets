@@ -58,20 +58,9 @@ internal class GameBetMajorRepository(
 		_ = await context.SaveChangesAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
-	public async ValueTask<bool> ExistAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
-	=> await context.GameBetMajors
-		.AnyAsync(gb => gb.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-3) &&
-			gb.ExternalCreatedOn < DateTimeOffset.UtcNow &&
-			gb.GameProviderId == gameProviderId &&
-			gb.GameId == gameId &&
-			gb.WalletId == walletId &&
-			gb.ExternalBetId == externalBetId,
-			cancellationToken: cancellationToken)
-		.ConfigureAwait(false);
-
 	public async ValueTask<GameBetMajorInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
 	=> await context.GameBetMajors
-		.Where(gbm => gbm.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-3) &&
+		.Where(gbm => gbm.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-7) &&
 			gbm.ExternalCreatedOn < DateTimeOffset.UtcNow &&
 			gbm.GameProviderId == gameProviderId &&
 			gbm.GameId == gameId &&
@@ -119,7 +108,7 @@ internal class GameBetMajorRepository(
 
 	public async ValueTask<GameBetMajorInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid id, CancellationToken cancellationToken = default)
 	=> await context.GameBetMajors
-		.Where(gbm => gbm.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-3) &&
+		.Where(gbm => gbm.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-7) &&
 			gbm.ExternalCreatedOn < DateTimeOffset.UtcNow &&
 			gbm.Id == id)
 		.Select(gbm => new GameBetMajorInfoModel(
@@ -165,7 +154,7 @@ internal class GameBetMajorRepository(
 	public async ValueTask UpdateAsync(GameBetMajorUpdateModel source, CancellationToken cancellationToken = default)
 	{
 		var entity = await context.GameBetMajors
-			.Where(gbm => gbm.ExternalCreatedOn >= source.ExternalCreatedOn.AddDays(-3) &&
+			.Where(gbm => gbm.ExternalCreatedOn >= source.ExternalCreatedOn.UtcDateTime.AddDays(-7) &&
 			gbm.ExternalCreatedOn < DateTimeOffset.UtcNow &&
 			gbm.Id == source.Id)
 			.SingleAsync(cancellationToken: cancellationToken)

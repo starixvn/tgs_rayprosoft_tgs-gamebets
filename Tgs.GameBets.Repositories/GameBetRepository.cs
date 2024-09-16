@@ -62,7 +62,7 @@ internal class GameBetRepository(
 
 	public async ValueTask<GameBetInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
 	=> await context.GameBets
-		.Where(gb => gb.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-3) &&
+		.Where(gb => gb.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-7) &&
 			gb.ExternalCreatedOn < DateTimeOffset.UtcNow &&
 			gb.GameProviderId == gameProviderId &&
 			gb.GameId == gameId &&
@@ -111,7 +111,7 @@ internal class GameBetRepository(
 
 	public async ValueTask<GameBetInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid id, CancellationToken cancellationToken = default)
 	=> await context.GameBets
-		.Where(gb => gb.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-3) &&
+		.Where(gb => gb.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-7) &&
 			gb.ExternalCreatedOn < DateTimeOffset.UtcNow &&
 			gb.Id == id)
 		.Select(gb => new GameBetInfoModel(
@@ -158,7 +158,7 @@ internal class GameBetRepository(
 	public async ValueTask UpdateAsync(GameBetUpdateModel source, CancellationToken cancellationToken = default)
 	{
 		var entity = await context.GameBets
-			.Where(gb => gb.ExternalCreatedOn >= source.ExternalCreatedOn.AddDays(-3) &&
+			.Where(gb => gb.ExternalCreatedOn >= source.ExternalCreatedOn.UtcDateTime.AddDays(-7) &&
 				gb.ExternalCreatedOn < DateTimeOffset.UtcNow &&
 				gb.Id == source.Id)
 			.SingleAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
