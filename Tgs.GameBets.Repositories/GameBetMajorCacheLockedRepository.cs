@@ -62,9 +62,6 @@ internal class GameBetMajorCacheLockedRepository(
 		}
 	}
 
-	public ValueTask<bool> ExistAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
-		=> repository.ExistAsync(externalCreatedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
-
 	public ValueTask<GameBetMajorInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
 		=> repository.GetAsync(externalCreatedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
 
