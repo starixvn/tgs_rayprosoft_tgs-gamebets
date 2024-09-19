@@ -10,5 +10,9 @@ public interface IGameBetMajorRepository
 
 	ValueTask<GameBetMajorInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid id, CancellationToken cancellationToken = default);
 
-	ValueTask UpdateAsync(GameBetMajorUpdateModel source, CancellationToken cancellationToken = default);
+	ValueTask ClosedAsync(GameBetMajorClosedModel source, CancellationToken cancellationToken = default);
+
+	ValueTask ReopenAsync(GameBetMajorReopenModel source, CancellationToken cancellationToken = default);
+
+	ValueTask RunningAsync(GameBetMajorRunningModel source, CancellationToken cancellationToken = default);
 }

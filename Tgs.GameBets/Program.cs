@@ -2,7 +2,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Npgsql;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;

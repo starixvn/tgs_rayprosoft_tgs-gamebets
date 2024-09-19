@@ -7,10 +7,12 @@ using Tgs.GameBets.Entities;
 namespace Tgs.GameBets.Repositories;
 
 internal class GameBetRepository(
-	TgsContext context) : IGameBetRepository
+	TgsContext context,
+	TimeProvider timeProvider) : IGameBetRepository
 {
 	public async ValueTask AddAsync(GameBetAddModel source, CancellationToken cancellationToken = default)
 	{
+		var currentTime = timeProvider.GetUtcNow();
 		var entity = new GameBet
 		{
 			Id = source.Id,
@@ -44,9 +46,9 @@ internal class GameBetRepository(
 			Turnover = source.Turnover,
 			WinLoss = source.WinLoss,
 			Jackpot = source.Jackpot,
-			CreatedOn = DateTime.UtcNow,
-			ClosedOn = DateTime.UtcNow,
-			UpdatedOn = DateTime.UtcNow,
+			CreatedOn = currentTime.UtcDateTime,
+			ClosedOn = currentTime.UtcDateTime,
+			UpdatedOn = currentTime.UtcDateTime,
 			ResetState = (int)Common.Enums.ResetState.None,
 			ResetOn = DateTimeOffset.UnixEpoch.UtcDateTime,
 			AdditionalData = source.AdditionalData.ToJsonString()
@@ -63,7 +65,7 @@ internal class GameBetRepository(
 	public async ValueTask<GameBetInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
 	=> await context.GameBets
 		.Where(gb => gb.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-7) &&
-			gb.ExternalCreatedOn < DateTimeOffset.UtcNow &&
+			gb.ExternalCreatedOn < DateTimeOffset.UtcNow.UtcDateTime &&
 			gb.GameProviderId == gameProviderId &&
 			gb.GameId == gameId &&
 			gb.WalletId == walletId &&
@@ -112,7 +114,7 @@ internal class GameBetRepository(
 	public async ValueTask<GameBetInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid id, CancellationToken cancellationToken = default)
 	=> await context.GameBets
 		.Where(gb => gb.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-7) &&
-			gb.ExternalCreatedOn < DateTimeOffset.UtcNow &&
+			gb.ExternalCreatedOn < DateTimeOffset.UtcNow.UtcDateTime &&
 			gb.Id == id)
 		.Select(gb => new GameBetInfoModel(
 			gb.Id,
@@ -159,9 +161,11 @@ internal class GameBetRepository(
 	{
 		var entity = await context.GameBets
 			.Where(gb => gb.ExternalCreatedOn >= source.ExternalCreatedOn.UtcDateTime.AddDays(-7) &&
-				gb.ExternalCreatedOn < DateTimeOffset.UtcNow &&
+				gb.ExternalCreatedOn < DateTimeOffset.UtcNow.UtcDateTime &&
 				gb.Id == source.Id)
 			.SingleAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+
+		var currentTime = timeProvider.GetUtcNow();
 
 		entity.ExternalClosedOn = source.ExternalClosedOn.UtcDateTime;
 		entity.ExternalPayoffOn = source.ExternalPayoffOn.UtcDateTime;
@@ -180,8 +184,8 @@ internal class GameBetRepository(
 		entity.Turnover = source.Turnover;
 		entity.WinLoss = source.WinLoss;
 		entity.ResetState = (int)Common.Enums.ResetState.Reset;
-		entity.ResetOn = DateTime.UtcNow;
-		entity.UpdatedOn = DateTime.UtcNow;
+		entity.ResetOn = currentTime.UtcDateTime;
+		entity.UpdatedOn = currentTime.UtcDateTime;
 		entity.AdditionalData = source.AdditionalData.ToJsonString();
 
 		_ = context.GameBets.Update(entity: entity);

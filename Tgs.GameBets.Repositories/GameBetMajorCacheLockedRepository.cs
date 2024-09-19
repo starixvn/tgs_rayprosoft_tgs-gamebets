@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
@@ -19,11 +18,11 @@ internal class GameBetMajorCacheLockedRepository(
 		try
 		{
 			if (!await SetKeyAsync(
+				externalCreatedOn: source.ExternalCreatedOn,
 				gameProviderId: source.GameProviderId,
 				gameId: source.GameId,
 				walletId: source.WalletId,
-				externalBetId: source.ExternalBetId,
-				externalCreatedOn: source.ExternalCreatedOn)
+				externalBetId: source.ExternalBetId)
 				.ConfigureAwait(false))
 			{
 				return;
@@ -62,19 +61,25 @@ internal class GameBetMajorCacheLockedRepository(
 		}
 	}
 
+	public ValueTask ClosedAsync(GameBetMajorClosedModel source, CancellationToken cancellationToken = default)
+		=> repository.ClosedAsync(source, cancellationToken);
+
 	public ValueTask<GameBetMajorInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
 		=> repository.GetAsync(externalCreatedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
 
 	public ValueTask<GameBetMajorInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid id, CancellationToken cancellationToken = default)
 		=> repository.GetAsync(externalCreatedOn, id, cancellationToken);
 
-	public ValueTask UpdateAsync(GameBetMajorUpdateModel source, CancellationToken cancellationToken = default)
-		=> repository.UpdateAsync(source, cancellationToken);
+	public ValueTask ReopenAsync(GameBetMajorReopenModel source, CancellationToken cancellationToken = default)
+		=> repository.ReopenAsync(source, cancellationToken);
+
+	public ValueTask RunningAsync(GameBetMajorRunningModel source, CancellationToken cancellationToken = default)
+		=> repository.RunningAsync(source, cancellationToken);
 
 	private static string GetKey(Guid gameProviderId, int gameId, Guid walletId, string externalBetId)
 		=> string.Concat(typeof(GameBetMajorCacheLockedRepository).Namespace!.Replace('.', '-').ToLower(), "bet-major", ":", "cache", ":", "locked", gameProviderId, ":", gameId, ":", walletId, ":", externalBetId);
 
-	private async ValueTask<bool> SetKeyAsync(Guid gameProviderId, int gameId, Guid walletId, string externalBetId, DateTimeOffset externalCreatedOn)
+	private async ValueTask<bool> SetKeyAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId)
 		=> await database.StringSetAsync(
 			key: GetKey(gameProviderId, gameId, walletId, externalBetId),
 			value: new JsonObject
@@ -86,8 +91,8 @@ internal class GameBetMajorCacheLockedRepository(
 				["ExternalCreatedOn"] = externalCreatedOn,
 				["LockedOn"] = DateTimeOffset.UtcNow
 			}.ToJsonString(),
-			when: When.NotExists,
-			expiry: expiry)
+			expiry: expiry,
+			when: When.NotExists)
 		.ConfigureAwait(false);
 
 	private async ValueTask DeleteKeyAsync(Guid gameProviderId, int gameId, Guid walletId, string externalBetId)

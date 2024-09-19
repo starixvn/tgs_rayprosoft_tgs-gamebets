@@ -186,4 +186,9 @@ public partial class GameBetMajor
     /// 擴充數據
     /// </summary>
     public string ExtendedData { get; set; } = null!;
+
+    /// <summary>
+    /// 流水(依照遊戲商提供流水,如遊戲商未提供預設有效下注)
+    /// </summary>
+    public decimal Turnover { get; set; }
 }

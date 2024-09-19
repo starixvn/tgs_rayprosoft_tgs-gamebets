@@ -43,11 +43,12 @@ public class GameBetsClientGameBetMajorUnitTest
 			CashoutState = Common.Enums.CashoutState.None,
 			ResettleState = Common.Enums.ResettleState.None,
 			JackpotState = Common.Enums.JackpotState.None,
-			CurrencyRatio = 1,
-			Bet = 100,
-			ValidBet = 50,
+			CurrencyRatio = 1.0m,
+			Bet = 100.0m,
+			ValidBet = 50.0m,
 			Settle = 97.5m,
 			WinLoss = 47.5m,
+			Turnover = 50.0m,
 			Commission = 0.1m,
 			Contribute = 0.01m,
 			Jackpot = 0.0m,
@@ -87,6 +88,7 @@ public class GameBetsClientGameBetMajorUnitTest
 			ValidBet: source.ValidBet,
 			Settle: source.Settle,
 			WinLoss: source.WinLoss,
+			Turnover: source.Turnover,
 			Commission: source.Commission,
 			Contribute: source.Contribute,
 			Jackpot: source.Jackpot,
@@ -131,6 +133,7 @@ public class GameBetsClientGameBetMajorUnitTest
 				compare.ValidBet == source.ValidBet &&
 				compare.Settle == source.Settle &&
 				compare.WinLoss == source.WinLoss &&
+				compare.Turnover == source.Turnover &&
 				compare.Commission == source.Commission &&
 				compare.Contribute == source.Contribute &&
 				compare.Jackpot == source.Jackpot &&
@@ -175,6 +178,7 @@ public class GameBetsClientGameBetMajorUnitTest
 		Assert.Equal(response.ValidBet, actual.ValidBet);
 		Assert.Equal(response.Settle, actual.Settle);
 		Assert.Equal(response.WinLoss, actual.WinLoss);
+		Assert.Equal(response.Turnover, actual.Turnover);
 		Assert.Equal(response.Commission, actual.Commission);
 		Assert.Equal(response.Contribute, actual.Contribute);
 		Assert.Equal(response.Jackpot, actual.Jackpot);
@@ -215,11 +219,12 @@ public class GameBetsClientGameBetMajorUnitTest
 			CashoutState: Common.Enums.CashoutState.None,
 			ResettleState: Common.Enums.ResettleState.None,
 			JackpotState: Common.Enums.JackpotState.None,
-			CurrencyRatio: 1,
-			Bet: 100,
-			ValidBet: 50,
+			CurrencyRatio: 1.0m,
+			Bet: 100.0m,
+			ValidBet: 50.0m,
 			Settle: 97.5m,
 			WinLoss: 47.5m,
+			Turnover: 50.0m,
 			Commission: 0.1m,
 			Contribute: 0.01m,
 			Jackpot: 0.0m,
@@ -280,6 +285,7 @@ public class GameBetsClientGameBetMajorUnitTest
 		Assert.Equal(response.ValidBet, actual.ValidBet);
 		Assert.Equal(response.Settle, actual.Settle);
 		Assert.Equal(response.WinLoss, actual.WinLoss);
+		Assert.Equal(response.Turnover, actual.Turnover);
 		Assert.Equal(response.Commission, actual.Commission);
 		Assert.Equal(response.Contribute, actual.Contribute);
 		Assert.Equal(response.Jackpot, actual.Jackpot);
@@ -351,11 +357,12 @@ public class GameBetsClientGameBetMajorUnitTest
 			CashoutState: Common.Enums.CashoutState.None,
 			ResettleState: Common.Enums.ResettleState.None,
 			JackpotState: Common.Enums.JackpotState.None,
-			CurrencyRatio: 1,
-			Bet: 100,
-			ValidBet: 50,
+			CurrencyRatio: 1.0m,
+			Bet: 100.0m,
+			ValidBet: 50.0m,
 			Settle: 97.5m,
 			WinLoss: 47.5m,
+			Turnover: 50.0m,
 			Commission: 0.1m,
 			Contribute: 0.01m,
 			Jackpot: 0.0m,
@@ -424,6 +431,7 @@ public class GameBetsClientGameBetMajorUnitTest
 		Assert.Equal(response.ValidBet, actual.ValidBet);
 		Assert.Equal(response.Settle, actual.Settle);
 		Assert.Equal(response.WinLoss, actual.WinLoss);
+		Assert.Equal(response.Turnover, actual.Turnover);
 		Assert.Equal(response.Commission, actual.Commission);
 		Assert.Equal(response.Contribute, actual.Contribute);
 		Assert.Equal(response.Jackpot, actual.Jackpot);
