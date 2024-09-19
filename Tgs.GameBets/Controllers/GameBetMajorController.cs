@@ -94,7 +94,7 @@ public class GameBetMajorController : ControllerBase
 				Commission: source.Commission,
 				Contribute: source.Contribute,
 				Jackpot: source.Jackpot,
-				AdditionalData: source.AdditionalData.ToString()),
+				AdditionalData: source.AdditionalData.ToJsonString()),
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
 
