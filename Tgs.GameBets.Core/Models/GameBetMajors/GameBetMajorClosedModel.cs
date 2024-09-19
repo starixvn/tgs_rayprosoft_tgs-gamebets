@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 
 namespace Tgs.GameBets.Core.Models.GameBetMajors;
-public record GameBetMajorUpdateModel(
+public record GameBetMajorClosedModel(
 	Guid Id,
 	DateTimeOffset ExternalCreatedOn,
 	DateTimeOffset ExternalClosedOn,
@@ -19,6 +19,7 @@ public record GameBetMajorUpdateModel(
 	decimal ValidBet,
 	decimal Settle,
 	decimal WinLoss,
+	decimal Turnover,
 	decimal Commission,
 	decimal Contribute,
 	decimal Jackpot,

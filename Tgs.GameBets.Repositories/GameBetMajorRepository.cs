@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Tgs.GameBets.Core;
 using Tgs.GameBets.Core.Models.GameBetMajors;
 using Tgs.GameBets.Entities;
@@ -6,10 +7,12 @@ using Tgs.GameBets.Entities;
 namespace Tgs.GameBets.Repositories;
 
 internal class GameBetMajorRepository(
-	TgsContext context) : IGameBetMajorRepository
+	TgsContext context,
+	TimeProvider timeProvider) : IGameBetMajorRepository
 {
 	public async ValueTask AddAsync(GameBetMajorAddModel source, CancellationToken cancellationToken = default)
 	{
+		var currentTime = timeProvider.GetUtcNow();
 		var entity = new GameBetMajor
 		{
 			Id = source.Id,
@@ -25,9 +28,9 @@ internal class GameBetMajorRepository(
 			ExternalRoundId = source.ExternalRoundId,
 			ExternalBetId = source.ExternalBetId,
 			ExternalCreatedOn = source.ExternalCreatedOn.UtcDateTime,
-			ExternalClosedOn = source.ExternalClosedOn.UtcDateTime,
-			ExternalPayoffOn = source.ExternalPayoffOn.UtcDateTime,
-			ExternalResettleOn = source.ExternalResettleOn.UtcDateTime,
+			ExternalClosedOn = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.ExternalClosedOn.UtcDateTime : DateTimeOffset.UnixEpoch.UtcDateTime,
+			ExternalPayoffOn = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.ExternalPayoffOn.UtcDateTime : DateTimeOffset.UnixEpoch.UtcDateTime,
+			ExternalResettleOn = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.ExternalResettleOn.UtcDateTime : DateTimeOffset.UnixEpoch.UtcDateTime,
 			BetState = (int)source.BetState,
 			BetType = (int)source.BetType,
 			FreeGameState = (int)source.FreeGameState,
@@ -38,14 +41,15 @@ internal class GameBetMajorRepository(
 			CurrencyRatio = source.CurrencyRatio,
 			Bet = source.Bet,
 			ValidBet = source.ValidBet,
-			Settle = source.Settle,
-			WinLoss = source.WinLoss,
-			Commission = source.Commission,
-			Contribute = source.Contribute,
-			Jackpot = source.Jackpot,
-			CreatedOn = DateTime.UtcNow,
-			ClosedOn = DateTime.UtcNow,
-			UpdatedOn = DateTime.UtcNow,
+			Settle = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.Settle : 0.0m,
+			WinLoss = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.WinLoss : 0.0m,
+			Turnover = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.Turnover : 0.0m,
+			Commission = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.Commission : 0.0m,
+			Contribute = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.Contribute : 0.0m,
+			Jackpot = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.Jackpot : 0.0m,
+			CreatedOn = currentTime.UtcDateTime,
+			ClosedOn = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? currentTime.UtcDateTime : DateTimeOffset.UnixEpoch.UtcDateTime,
+			UpdatedOn = currentTime.UtcDateTime,
 			AdditionalData = source.AdditionalData.ToJsonString(),
 			ExtendedData = source.ExtendedData.ToJsonString(),
 		};
@@ -58,10 +62,51 @@ internal class GameBetMajorRepository(
 		_ = await context.SaveChangesAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
+	public async ValueTask ClosedAsync(GameBetMajorClosedModel source, CancellationToken cancellationToken = default)
+	{
+		var entity = await context.GameBetMajors
+			.Where(gbm => gbm.ExternalCreatedOn >= source.ExternalCreatedOn.UtcDateTime.AddDays(-7) &&
+			gbm.ExternalCreatedOn < DateTimeOffset.UtcNow.UtcDateTime &&
+			gbm.Id == source.Id &&
+			(gbm.BetState == (int)Common.Enums.BetState.Waiting || gbm.BetState == (int)Common.Enums.BetState.Running))
+			.SingleAsync(cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+
+		var currentTime = timeProvider.GetUtcNow();
+
+		entity.ExternalClosedOn = source.ExternalClosedOn.UtcDateTime;
+		entity.ExternalPayoffOn = source.ExternalPayoffOn.UtcDateTime;
+		entity.ExternalResettleOn = source.ExternalResettleOn.UtcDateTime;
+		entity.BetState = (int)source.BetState;
+		entity.BetType = (int)source.BetType;
+		entity.FreeGameState = (int)source.FreeGameState;
+		entity.GambleState = (int)source.GambleState;
+		entity.CashoutState = (int)source.CashoutState;
+		entity.ResettleState = (int)source.ResettleState;
+		entity.JackpotState = (int)source.JackpotState;
+		entity.CurrencyRatio = source.CurrencyRatio;
+		entity.Bet = source.Bet;
+		entity.ValidBet = source.ValidBet;
+		entity.Settle = source.Settle;
+		entity.WinLoss = source.WinLoss;
+		entity.Turnover = source.Turnover;
+		entity.Commission = source.Commission;
+		entity.Contribute = source.Contribute;
+		entity.Jackpot = source.Jackpot;
+		entity.AdditionalData = source.AdditionalData.ToJsonString();
+		entity.ExtendedData = source.ExtendedData.ToJsonString();
+		entity.ClosedOn = currentTime.UtcDateTime;
+		entity.UpdatedOn = currentTime.UtcDateTime;
+
+		_ = context.GameBetMajors.Update(entity: entity);
+
+		_ = await context.SaveChangesAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+	}
+
 	public async ValueTask<GameBetMajorInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
 	=> await context.GameBetMajors
 		.Where(gbm => gbm.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-7) &&
-			gbm.ExternalCreatedOn < DateTimeOffset.UtcNow &&
+			gbm.ExternalCreatedOn < DateTimeOffset.UtcNow.UtcDateTime &&
 			gbm.GameProviderId == gameProviderId &&
 			gbm.GameId == gameId &&
 			gbm.WalletId == walletId &&
@@ -95,6 +140,7 @@ internal class GameBetMajorRepository(
 			gbm.ValidBet,
 			gbm.Settle,
 			gbm.WinLoss,
+			gbm.Turnover,
 			gbm.Commission,
 			gbm.Contribute,
 			gbm.Jackpot,
@@ -109,7 +155,7 @@ internal class GameBetMajorRepository(
 	public async ValueTask<GameBetMajorInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid id, CancellationToken cancellationToken = default)
 	=> await context.GameBetMajors
 		.Where(gbm => gbm.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-7) &&
-			gbm.ExternalCreatedOn < DateTimeOffset.UtcNow &&
+			gbm.ExternalCreatedOn < DateTimeOffset.UtcNow.UtcDateTime &&
 			gbm.Id == id)
 		.Select(gbm => new GameBetMajorInfoModel(
 			gbm.Id,
@@ -140,6 +186,7 @@ internal class GameBetMajorRepository(
 			gbm.ValidBet,
 			gbm.Settle,
 			gbm.WinLoss,
+			gbm.Turnover,
 			gbm.Commission,
 			gbm.Contribute,
 			gbm.Jackpot,
@@ -151,14 +198,18 @@ internal class GameBetMajorRepository(
 		.FirstOrDefaultAsync(cancellationToken: cancellationToken)
 		.ConfigureAwait(false);
 
-	public async ValueTask UpdateAsync(GameBetMajorUpdateModel source, CancellationToken cancellationToken = default)
+	public async ValueTask ReopenAsync(GameBetMajorReopenModel source, CancellationToken cancellationToken = default)
 	{
 		var entity = await context.GameBetMajors
 			.Where(gbm => gbm.ExternalCreatedOn >= source.ExternalCreatedOn.UtcDateTime.AddDays(-7) &&
-			gbm.ExternalCreatedOn < DateTimeOffset.UtcNow &&
-			gbm.Id == source.Id)
+			gbm.ExternalCreatedOn < DateTimeOffset.UtcNow.UtcDateTime &&
+			gbm.Id == source.Id &&
+			gbm.BetState != (int)Common.Enums.BetState.Waiting &&
+			gbm.BetState != (int)Common.Enums.BetState.Running)
 			.SingleAsync(cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
+
+		var currentTime = timeProvider.GetUtcNow();
 
 		entity.ExternalClosedOn = source.ExternalClosedOn.UtcDateTime;
 		entity.ExternalPayoffOn = source.ExternalPayoffOn.UtcDateTime;
@@ -175,12 +226,46 @@ internal class GameBetMajorRepository(
 		entity.ValidBet = source.ValidBet;
 		entity.Settle = source.Settle;
 		entity.WinLoss = source.WinLoss;
+		entity.Turnover = source.Turnover;
 		entity.Commission = source.Commission;
 		entity.Contribute = source.Contribute;
 		entity.Jackpot = source.Jackpot;
 		entity.AdditionalData = source.AdditionalData.ToJsonString();
 		entity.ExtendedData = source.ExtendedData.ToJsonString();
-		entity.UpdatedOn = DateTime.UtcNow;
+		entity.UpdatedOn = currentTime.UtcDateTime;
+
+		_ = context.GameBetMajors.Update(entity: entity);
+
+		_ = await context.SaveChangesAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+	}
+
+	public async ValueTask RunningAsync(GameBetMajorRunningModel source, CancellationToken cancellationToken = default)
+	{
+		var entity = await context.GameBetMajors
+			.Where(gbm => gbm.ExternalCreatedOn >= source.ExternalCreatedOn.UtcDateTime.AddDays(-7) &&
+			gbm.ExternalCreatedOn < DateTimeOffset.UtcNow.UtcDateTime &&
+			gbm.Id == source.Id &&
+			(gbm.BetState == (int)Common.Enums.BetState.Waiting || gbm.BetState == (int)Common.Enums.BetState.Running))
+			.SingleAsync(cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+
+		var currentTime = timeProvider.GetUtcNow();
+
+		entity.ExternalClosedOn = DateTimeOffset.UnixEpoch.UtcDateTime;
+		entity.ExternalPayoffOn = DateTimeOffset.UnixEpoch.UtcDateTime;
+		entity.ExternalResettleOn = DateTimeOffset.UnixEpoch.UtcDateTime;
+		entity.BetState = (int)Common.Enums.BetState.Running;
+		entity.Bet = source.Bet;
+		entity.ValidBet = source.ValidBet;
+		entity.Settle = 0.0m;
+		entity.WinLoss = 0.0m;
+		entity.Turnover = source.Turnover;
+		entity.Commission = 0.0m;
+		entity.Contribute = 0.0m;
+		entity.Jackpot = 0.0m;
+		entity.AdditionalData = source.AdditionalData.ToJsonString();
+		entity.ExtendedData = source.ExtendedData.ToJsonString();
+		entity.UpdatedOn = currentTime.UtcDateTime;
 
 		_ = context.GameBetMajors.Update(entity: entity);
 

@@ -18,11 +18,11 @@ internal class GameBetCacheLockedRepository(
 		try
 		{
 			if (!await SetKeyAsync(
+				externalCreatedOn: source.ExternalCreatedOn,
 				gameProviderId: source.GameProviderId,
 				gameId: source.GameId,
 				walletId: source.WalletId,
-				externalBetId: source.ExternalBetId,
-				externalCreatedOn: source.ExternalCreatedOn)
+				externalBetId: source.ExternalBetId)
 				.ConfigureAwait(false))
 			{
 				return;
@@ -71,9 +71,9 @@ internal class GameBetCacheLockedRepository(
 		=> repository.UpdateAsync(source, cancellationToken);
 
 	private static string GetKey(Guid gameProviderId, int gameId, Guid walletId, string externalBetId)
-			=> string.Concat(typeof(GameBetCacheLockedRepository).Namespace!.Replace('.', '-').ToLower(), "bet", ":", "Cache", ":", "locked", gameProviderId, ":", gameId, ":", walletId, ":", externalBetId);
+			=> string.Concat(typeof(GameBetCacheLockedRepository).Namespace!.Replace('.', '-').ToLower(), "bet", ":", "cache", ":", "locked", gameProviderId, ":", gameId, ":", walletId, ":", externalBetId);
 
-	private async ValueTask<bool> SetKeyAsync(Guid gameProviderId, int gameId, Guid walletId, string externalBetId, DateTimeOffset externalCreatedOn)
+	private async ValueTask<bool> SetKeyAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId)
 		=> await database.StringSetAsync(
 			key: GetKey(gameProviderId, gameId, walletId, externalBetId),
 			value: new JsonObject
@@ -85,8 +85,8 @@ internal class GameBetCacheLockedRepository(
 				["ExternalCreatedOn"] = externalCreatedOn,
 				["LockedOn"] = DateTimeOffset.UtcNow
 			}.ToJsonString(),
-			when: When.NotExists,
-			expiry: expiry)
+			expiry: expiry,
+			when: When.NotExists)
 		.ConfigureAwait(false);
 
 	private async ValueTask DeleteKeyAsync(Guid gameProviderId, int gameId, Guid walletId, string externalBetId)

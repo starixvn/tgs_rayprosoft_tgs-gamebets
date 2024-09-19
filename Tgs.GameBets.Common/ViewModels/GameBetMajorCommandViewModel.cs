@@ -92,6 +92,10 @@ public record GameBetMajorCommandViewModel
 	public decimal WinLoss { get; init; }
 	[Required]
 	[Range(minimum: 0, maximum: double.MaxValue)]
+	[DefaultValue(typeof(decimal), "0.8")]
+	public decimal Turnover { get; init; }
+	[Required]
+	[Range(minimum: 0, maximum: double.MaxValue)]
 	[DefaultValue(typeof(decimal), "0.01")]
 	public decimal Commission { get; init; }
 	[Required]

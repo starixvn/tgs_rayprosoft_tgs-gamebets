@@ -178,6 +178,10 @@ namespace Tgs.GameBets.Entities.Configurations
                 .HasPrecision(18, 6)
                 .HasComment("結算(包含本金)")
                 .HasColumnName("settle");
+            entity.Property(e => e.Turnover)
+                .HasPrecision(18, 6)
+                .HasComment("流水(依照遊戲商提供流水,如遊戲商未提供預設有效下注)")
+                .HasColumnName("turnover");
             entity.Property(e => e.UpdatedOn)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasComment("修改時間")

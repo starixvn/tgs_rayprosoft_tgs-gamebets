@@ -30,6 +30,7 @@ public record GameBetMajorInfoModel(
 	decimal ValidBet,
 	decimal Settle,
 	decimal WinLoss,
+	decimal Turnover,
 	decimal Commission,
 	decimal Contribute,
 	decimal Jackpot,

@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameBets.Client", "Tgs.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameBets.IntegrationUnitTest", "Tgs.GameBets.IntegrationUnitTest\Tgs.GameBets.IntegrationUnitTest.csproj", "{E7D794A3-EFF5-43D0-A367-0D39D22B93BF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameBets.Repositories.UnitTest", "Tgs.GameBets.Repositories.UnitTest\Tgs.GameBets.Repositories.UnitTest.csproj", "{DB5427A4-7F45-4E66-A296-88E185ADB6D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{E7D794A3-EFF5-43D0-A367-0D39D22B93BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7D794A3-EFF5-43D0-A367-0D39D22B93BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7D794A3-EFF5-43D0-A367-0D39D22B93BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB5427A4-7F45-4E66-A296-88E185ADB6D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB5427A4-7F45-4E66-A296-88E185ADB6D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB5427A4-7F45-4E66-A296-88E185ADB6D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB5427A4-7F45-4E66-A296-88E185ADB6D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

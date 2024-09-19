@@ -44,6 +44,7 @@ internal class GameBetMajorGetIdService(
 				ValidBet: gameBetMajorInfo.ValidBet,
 				Settle: gameBetMajorInfo.Settle,
 				WinLoss: gameBetMajorInfo.WinLoss,
+				Turnover: gameBetMajorInfo.Turnover,
 				Commission: gameBetMajorInfo.Commission,
 				Contribute: gameBetMajorInfo.Contribute,
 				Jackpot: gameBetMajorInfo.Jackpot,
