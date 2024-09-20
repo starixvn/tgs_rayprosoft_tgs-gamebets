@@ -127,22 +127,6 @@ internal class GameBetMajorCommandService(
 					ExtendedData: gameBetMajorInfo.ExtendedData);
 			}
 
-			logger.LogWarning("{logWarning}",
-				JsonSerializer.Serialize(new
-				{
-					LogOn = DateTime.Now.ToString("u"),
-					gameBetMajorInfo.Id,
-					gameBetMajorInfo.GameProviderId,
-					gameBetMajorInfo.GameId,
-					gameBetMajorInfo.PlayerCode,
-					gameBetMajorInfo.WalletId,
-					gameBetMajorInfo.ExternalBetId,
-					ExternalCreatedOn = gameBetMajorInfo.ExternalCreatedOn.ToString("u"),
-					CurrentBetState = gameBetMajorInfo.BetState.ToString(),
-					RequestBetState = request.BetState.ToString(),
-					Message = "This game's betting data has changed."
-				}));
-
 			if ((gameBetMajorInfo.BetState == Common.Enums.BetState.Waiting || gameBetMajorInfo.BetState == Common.Enums.BetState.Running) &&
 				(request.BetState == Common.Enums.BetState.Waiting || request.BetState == Common.Enums.BetState.Running) &&
 				(gameBetMajorInfo.Bet != request.Bet || gameBetMajorInfo.ValidBet != request.ValidBet || gameBetMajorInfo.Turnover != request.Turnover))
@@ -165,6 +149,21 @@ internal class GameBetMajorCommandService(
 					request.BetState != Common.Enums.BetState.Waiting &&
 					request.BetState != Common.Enums.BetState.Running)
 				{
+					logger.LogInformation("{logInformation}",
+						JsonSerializer.Serialize(new
+						{
+							LogOn = DateTime.Now.ToString("u"),
+							gameBetMajorInfo.Id,
+							gameBetMajorInfo.GameProviderId,
+							gameBetMajorInfo.GameId,
+							gameBetMajorInfo.PlayerCode,
+							gameBetMajorInfo.WalletId,
+							gameBetMajorInfo.ExternalBetId,
+							ExternalCreatedOn = gameBetMajorInfo.ExternalCreatedOn.ToString("u"),
+							CurrentBetState = gameBetMajorInfo.BetState.ToString(),
+							RequestBetState = request.BetState.ToString(),
+							Message = "This game bet has been settled."
+						}));
 					await repository.ClosedAsync(
 						source: new GameBetMajorClosedModel(
 							Id: gameBetMajorInfo.Id,
@@ -214,6 +213,23 @@ internal class GameBetMajorCommandService(
 							gameBetMajorInfo.Contribute != request.Contribute ||
 							gameBetMajorInfo.Jackpot != request.Jackpot)
 						{
+
+							logger.LogWarning("{logWarning}",
+								JsonSerializer.Serialize(new
+								{
+									LogOn = DateTime.Now.ToString("u"),
+									gameBetMajorInfo.Id,
+									gameBetMajorInfo.GameProviderId,
+									gameBetMajorInfo.GameId,
+									gameBetMajorInfo.PlayerCode,
+									gameBetMajorInfo.WalletId,
+									gameBetMajorInfo.ExternalBetId,
+									ExternalCreatedOn = gameBetMajorInfo.ExternalCreatedOn.ToString("u"),
+									CurrentBetState = gameBetMajorInfo.BetState.ToString(),
+									RequestBetState = request.BetState.ToString(),
+									Message = "This game bet has been changed and the settlement statement has been changed."
+								}));
+
 							await repository.ReopenAsync(
 							source: new GameBetMajorReopenModel(
 								Id: gameBetMajorInfo.Id,
