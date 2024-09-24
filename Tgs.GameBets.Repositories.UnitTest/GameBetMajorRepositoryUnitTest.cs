@@ -1226,7 +1226,6 @@ public class GameBetMajorRepositoryUnitTest
 			ExternalCreatedOn: externalCreatedOn,
 			Bet: 2.0m,
 			ValidBet: 2.0m,
-			Turnover: 2.0m,
 			AdditionalData: new JsonObject
 			{
 				["ExternalRoundId"] = externalRoundId,
@@ -1357,7 +1356,6 @@ public class GameBetMajorRepositoryUnitTest
 			ExternalCreatedOn: externalCreatedOn,
 			Bet: 2.0m,
 			ValidBet: 2.0m,
-			Turnover: 2.0m,
 			AdditionalData: new JsonObject
 			{
 				["ExternalRoundId"] = externalRoundId,

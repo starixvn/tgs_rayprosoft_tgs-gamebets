@@ -13,6 +13,7 @@ internal class GameBetMajorRepository(
 	public async ValueTask AddAsync(GameBetMajorAddModel source, CancellationToken cancellationToken = default)
 	{
 		var currentTime = timeProvider.GetUtcNow();
+		var isRunning = source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running;
 		var entity = new GameBetMajor
 		{
 			Id = source.Id,
@@ -28,9 +29,9 @@ internal class GameBetMajorRepository(
 			ExternalRoundId = source.ExternalRoundId,
 			ExternalBetId = source.ExternalBetId,
 			ExternalCreatedOn = source.ExternalCreatedOn.UtcDateTime,
-			ExternalClosedOn = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.ExternalClosedOn.UtcDateTime : DateTimeOffset.UnixEpoch.UtcDateTime,
-			ExternalPayoffOn = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.ExternalPayoffOn.UtcDateTime : DateTimeOffset.UnixEpoch.UtcDateTime,
-			ExternalResettleOn = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.ExternalResettleOn.UtcDateTime : DateTimeOffset.UnixEpoch.UtcDateTime,
+			ExternalClosedOn = isRunning ? source.ExternalClosedOn.UtcDateTime : DateTimeOffset.UnixEpoch.UtcDateTime,
+			ExternalPayoffOn = isRunning ? source.ExternalPayoffOn.UtcDateTime : DateTimeOffset.UnixEpoch.UtcDateTime,
+			ExternalResettleOn = isRunning ? source.ExternalResettleOn.UtcDateTime : DateTimeOffset.UnixEpoch.UtcDateTime,
 			BetState = (int)source.BetState,
 			BetType = (int)source.BetType,
 			FreeGameState = (int)source.FreeGameState,
@@ -41,14 +42,14 @@ internal class GameBetMajorRepository(
 			CurrencyRatio = source.CurrencyRatio,
 			Bet = source.Bet,
 			ValidBet = source.ValidBet,
-			Settle = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.Settle : 0.0m,
-			WinLoss = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.WinLoss : 0.0m,
-			Turnover = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.Turnover : 0.0m,
-			Commission = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.Commission : 0.0m,
-			Contribute = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.Contribute : 0.0m,
-			Jackpot = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? source.Jackpot : 0.0m,
+			Settle = isRunning ? source.Settle : 0.0m,
+			WinLoss = isRunning ? source.WinLoss : 0.0m,
+			Turnover = isRunning ? source.Turnover : 0.0m,
+			Commission = isRunning ? source.Commission : 0.0m,
+			Contribute = isRunning ? source.Contribute : 0.0m,
+			Jackpot = isRunning ? source.Jackpot : 0.0m,
 			CreatedOn = currentTime.UtcDateTime,
-			ClosedOn = (source.BetState is not Common.Enums.BetState.Waiting and not Common.Enums.BetState.Running) ? currentTime.UtcDateTime : DateTimeOffset.UnixEpoch.UtcDateTime,
+			ClosedOn = isRunning ? currentTime.UtcDateTime : DateTimeOffset.UnixEpoch.UtcDateTime,
 			UpdatedOn = currentTime.UtcDateTime,
 			AdditionalData = source.AdditionalData.ToJsonString(),
 			ExtendedData = source.ExtendedData.ToJsonString(),
@@ -259,7 +260,7 @@ internal class GameBetMajorRepository(
 		entity.ValidBet = source.ValidBet;
 		entity.Settle = 0.0m;
 		entity.WinLoss = 0.0m;
-		entity.Turnover = source.Turnover;
+		entity.Turnover = 0.0m;
 		entity.Commission = 0.0m;
 		entity.Contribute = 0.0m;
 		entity.Jackpot = 0.0m;

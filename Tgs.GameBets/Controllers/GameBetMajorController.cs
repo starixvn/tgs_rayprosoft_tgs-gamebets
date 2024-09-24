@@ -6,6 +6,7 @@ using Tgs.GameBets.Core.ApplicationServices.GameBetMajors;
 namespace Tgs.GameBets.Controllers;
 
 [Route("game-bet-major")]
+[Route("game-bet-majors")]
 [ApiController]
 public class GameBetMajorController : ControllerBase
 {
@@ -57,7 +58,7 @@ public class GameBetMajorController : ControllerBase
 	///		}
 	/// </remarks>
 	[HttpPost()]
-	public async ValueTask<Common.ViewModels.GameBetMajorInfoViewModel> GameBetMajorCommandAsync(
+	public async ValueTask<Common.ViewModels.GameBetInfoViewModel> GameBetMajorCommandAsync(
 		[FromServices] IMediator mediator,
 		[FromBody] Common.ViewModels.GameBetMajorCommandViewModel source)
 	{
@@ -94,11 +95,11 @@ public class GameBetMajorController : ControllerBase
 				Commission: source.Commission,
 				Contribute: source.Contribute,
 				Jackpot: source.Jackpot,
-				AdditionalData: source.AdditionalData.ToString()),
+				AdditionalData: source.AdditionalData),
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
 
-		return new Common.ViewModels.GameBetMajorInfoViewModel(
+		return new Common.ViewModels.GameBetInfoViewModel(
 			Id: response.Id,
 			GameProviderId: response.GameProviderId,
 			GameProviderConfigurationId: response.GameProviderConfigurationId,
@@ -134,7 +135,10 @@ public class GameBetMajorController : ControllerBase
 			CreatedOn: response.CreatedOn,
 			ClosedOn: response.ClosedOn,
 			UpdatedOn: response.UpdatedOn,
-			AdditionalData: JsonNode.Parse(response.AdditionalData) ?? new JsonObject { });
+			ResetState: Common.Enums.ResetState.None,
+			ResetOn: DateTimeOffset.UnixEpoch,
+			AdditionalData: JsonNode.Parse(response.AdditionalData) ?? new JsonObject { },
+			ExtendedData: JsonNode.Parse(response.ExtendedData) ?? new JsonObject { });
 	}
 
 	/// <summary>
@@ -144,7 +148,7 @@ public class GameBetMajorController : ControllerBase
 	/// <param name="source">The source.</param>
 	/// <returns></returns>
 	[HttpGet("external-bet")]
-	public async ValueTask<Common.ViewModels.GameBetMajorInfoViewModel?> GameBetMajorGetExternalAsync(
+	public async ValueTask<Common.ViewModels.GameBetInfoViewModel?> GameBetMajorGetExternalAsync(
 		[FromServices] IMediator mediator,
 		[FromQuery] Common.ViewModels.GameBetMajorGetExternalViewModel source)
 	{
@@ -160,7 +164,7 @@ public class GameBetMajorController : ControllerBase
 
 		return response is null
 			? null
-			: new Common.ViewModels.GameBetMajorInfoViewModel(
+			: new Common.ViewModels.GameBetInfoViewModel(
 				Id: response.Id,
 				GameProviderId: response.GameProviderId,
 				GameProviderConfigurationId: response.GameProviderConfigurationId,
@@ -196,7 +200,10 @@ public class GameBetMajorController : ControllerBase
 				CreatedOn: response.CreatedOn,
 				ClosedOn: response.ClosedOn,
 				UpdatedOn: response.UpdatedOn,
-				AdditionalData: JsonNode.Parse(response.AdditionalData) ?? new JsonObject { });
+				ResetState: Common.Enums.ResetState.None,
+				ResetOn: DateTimeOffset.UnixEpoch,
+				AdditionalData: JsonNode.Parse(response.AdditionalData) ?? new JsonObject { },
+				ExtendedData: JsonNode.Parse(response.ExtendedData) ?? new JsonObject { });
 	}
 
 	/// <summary>
@@ -207,7 +214,7 @@ public class GameBetMajorController : ControllerBase
 	/// <param name="source">The source.</param>
 	/// <returns></returns>
 	[HttpGet("{id:guid}")]
-	public async ValueTask<Common.ViewModels.GameBetMajorInfoViewModel?> GameBetMajorGetIdAsync(
+	public async ValueTask<Common.ViewModels.GameBetInfoViewModel?> GameBetMajorGetIdAsync(
 		[FromServices] IMediator mediator,
 		Guid id,
 		[FromQuery] Common.ViewModels.GameBetMajorGetIdViewModel source)
@@ -221,7 +228,7 @@ public class GameBetMajorController : ControllerBase
 
 		return response is null
 			? null
-			: new Common.ViewModels.GameBetMajorInfoViewModel(
+			: new Common.ViewModels.GameBetInfoViewModel(
 				Id: response.Id,
 				GameProviderId: response.GameProviderId,
 				GameProviderConfigurationId: response.GameProviderConfigurationId,
@@ -257,6 +264,9 @@ public class GameBetMajorController : ControllerBase
 				CreatedOn: response.CreatedOn,
 				ClosedOn: response.ClosedOn,
 				UpdatedOn: response.UpdatedOn,
-				AdditionalData: JsonNode.Parse(response.AdditionalData) ?? new JsonObject { });
+				ResetState: Common.Enums.ResetState.None,
+				ResetOn: DateTimeOffset.UnixEpoch,
+				AdditionalData: JsonNode.Parse(response.AdditionalData) ?? new JsonObject { },
+				ExtendedData: JsonNode.Parse(response.ExtendedData) ?? new JsonObject { });
 	}
 }

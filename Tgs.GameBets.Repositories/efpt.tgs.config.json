@@ -19,7 +19,15 @@
   "T4TemplatePath": null,
   "Tables": [
     {
+      "Name": "dbo.game_bet_closes",
+      "ObjectType": 0
+    },
+    {
       "Name": "dbo.game_bet_majors",
+      "ObjectType": 0
+    },
+    {
+      "Name": "dbo.game_bet_runnings",
       "ObjectType": 0
     },
     {

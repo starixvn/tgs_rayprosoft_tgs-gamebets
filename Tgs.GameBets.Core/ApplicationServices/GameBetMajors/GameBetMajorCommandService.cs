@@ -63,7 +63,7 @@ internal class GameBetMajorCommandService(
 					Commission: request.Commission,
 					Contribute: request.Contribute,
 					Jackpot: request.Jackpot,
-					AdditionalData: JsonNode.Parse(request.AdditionalData) ?? new JsonObject { },
+					AdditionalData: request.AdditionalData,
 					ExtendedData: extendedData),
 				cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
@@ -129,7 +129,7 @@ internal class GameBetMajorCommandService(
 
 			if ((gameBetMajorInfo.BetState == Common.Enums.BetState.Waiting || gameBetMajorInfo.BetState == Common.Enums.BetState.Running) &&
 				(request.BetState == Common.Enums.BetState.Waiting || request.BetState == Common.Enums.BetState.Running) &&
-				(gameBetMajorInfo.Bet != request.Bet || gameBetMajorInfo.ValidBet != request.ValidBet || gameBetMajorInfo.Turnover != request.Turnover))
+				(gameBetMajorInfo.Bet != request.Bet || gameBetMajorInfo.ValidBet != request.ValidBet))
 			{
 				await repository.RunningAsync(
 					source: new GameBetMajorRunningModel(
@@ -137,8 +137,7 @@ internal class GameBetMajorCommandService(
 						ExternalCreatedOn: gameBetMajorInfo.ExternalCreatedOn,
 						Bet: request.Bet,
 						ValidBet: request.ValidBet,
-						Turnover: request.Turnover,
-						AdditionalData: JsonNode.Parse(request.AdditionalData) ?? new JsonObject { },
+						AdditionalData: request.AdditionalData,
 						ExtendedData: extendedData),
 					cancellationToken: cancellationToken)
 					.ConfigureAwait(false);
@@ -187,7 +186,7 @@ internal class GameBetMajorCommandService(
 							Commission: request.Commission,
 							Contribute: request.Contribute,
 							Jackpot: request.Jackpot,
-							AdditionalData: JsonNode.Parse(request.AdditionalData) ?? new JsonObject { },
+							AdditionalData: request.AdditionalData,
 							ExtendedData: extendedData),
 						cancellationToken: cancellationToken)
 						.ConfigureAwait(false);
@@ -213,7 +212,6 @@ internal class GameBetMajorCommandService(
 							gameBetMajorInfo.Contribute != request.Contribute ||
 							gameBetMajorInfo.Jackpot != request.Jackpot)
 						{
-
 							logger.LogWarning("{logWarning}",
 								JsonSerializer.Serialize(new
 								{
@@ -253,7 +251,7 @@ internal class GameBetMajorCommandService(
 								Commission: request.Commission,
 								Contribute: request.Contribute,
 								Jackpot: request.Jackpot,
-								AdditionalData: JsonNode.Parse(request.AdditionalData) ?? new JsonObject { },
+								AdditionalData: request.AdditionalData,
 								ExtendedData: extendedData),
 							cancellationToken: cancellationToken)
 							.ConfigureAwait(false);

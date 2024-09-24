@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Text.Json.Nodes;
+using MediatR;
 
 namespace Tgs.GameBets.Core.ApplicationServices.GameBetMajors;
 
@@ -34,4 +35,4 @@ public record class GameBetMajorCommandRequest(
 	decimal Commission,
 	decimal Contribute,
 	decimal Jackpot,
-	string AdditionalData) : IRequest<GameBetMajorInfoResponse>;
+	JsonNode AdditionalData) : IRequest<GameBetMajorInfoResponse>;

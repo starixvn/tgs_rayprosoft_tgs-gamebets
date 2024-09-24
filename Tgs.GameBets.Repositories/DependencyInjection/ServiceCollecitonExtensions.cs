@@ -17,5 +17,7 @@ public static class ServiceCollecitonExtensions
 		.AddTransient<IGameBetRepository, GameBetRepository>()
 		.Decorate<IGameBetRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<GameBetCacheLockedRepository>(sp, innerRepository, redisDatabaseResolver(sp), TimeSpan.FromMinutes(1)))
 		.AddTransient<IGameBetMajorRepository, GameBetMajorRepository>()
-		.Decorate<IGameBetMajorRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<GameBetMajorCacheLockedRepository>(sp, innerRepository, redisDatabaseResolver(sp), TimeSpan.FromMinutes(1)));
+		.Decorate<IGameBetMajorRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<GameBetMajorCacheLockedRepository>(sp, innerRepository, redisDatabaseResolver(sp), TimeSpan.FromMinutes(1)))
+		.AddTransient<IGameBetRunningRepository, GameBetRunningRepository>()
+		.AddTransient<IGameBetCloseRepository, GameBetCloseRepository>();
 }
