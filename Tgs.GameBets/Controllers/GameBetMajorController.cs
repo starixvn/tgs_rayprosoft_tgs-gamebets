@@ -5,7 +5,6 @@ using Tgs.GameBets.Core.ApplicationServices.GameBetMajors;
 
 namespace Tgs.GameBets.Controllers;
 
-[Route("game-bet-major")]
 [Route("game-bet-majors")]
 [ApiController]
 public class GameBetMajorController : ControllerBase
