@@ -6,9 +6,9 @@ namespace Tgs.GameBets.Client;
 
 internal partial class GameBetsClient
 {
-	public async ValueTask<GameBetMajorInfoViewModel> GameBetMajorCommandAsync(GameBetMajorCommandViewModel source, CancellationToken cancellationToken = default)
+	public async ValueTask<GameBetInfoViewModel> GameBetMajorCommandAsync(GameBetMajorCommandViewModel source, CancellationToken cancellationToken = default)
 		=> await httpClient.PostAsJsonAsync(
-			requestUri: "/game-bet-major",
+			requestUri: "/game-bet-majors",
 			value: source,
 			options: _SerializerOptions,
 			cancellationToken: cancellationToken)
@@ -16,7 +16,7 @@ internal partial class GameBetsClient
 			.Do(response => response.EnsureSuccessStatusCode())
 			.Where(response => response.StatusCode == System.Net.HttpStatusCode.OK)
 			.SelectMany(response => response.Content
-				.ReadFromJsonAsync<GameBetMajorInfoViewModel>(_SerializerOptions, cancellationToken)
+				.ReadFromJsonAsync<GameBetInfoViewModel>(_SerializerOptions, cancellationToken)
 				.ToAsyncEnumerable())
 			.FirstOrDefaultAsync(cancellationToken: cancellationToken)
 			.ConfigureAwait(false)
@@ -27,30 +27,30 @@ internal partial class GameBetsClient
 				source.GameId,
 				source.WalletId,
 				source.ExternalBetId,
-			}), nameof(GameBetMajorInfoViewModel));
+			}), nameof(GameBetInfoViewModel));
 
-	public async ValueTask<GameBetMajorInfoViewModel?> GameBetMajorGetAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
+	public async ValueTask<GameBetInfoViewModel?> GameBetMajorGetAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
 		=> await httpClient.GetAsync(
-			requestUri: $"/game-bet-major/external-bet?gameProviderId={gameProviderId}&gameId={gameId}&walletId={walletId}&externalBetId={externalBetId}&externalCreatedOn={externalCreatedOn:u}",
+			requestUri: $"/game-bet-majors/external-bet?gameProviderId={gameProviderId}&gameId={gameId}&walletId={walletId}&externalBetId={externalBetId}&externalCreatedOn={externalCreatedOn:u}",
 			cancellationToken: cancellationToken)
 		.ToAsyncEnumerable()
 		.Do(response => response.EnsureSuccessStatusCode())
 		.Where(response => response.StatusCode == System.Net.HttpStatusCode.OK)
 		.SelectMany(response => response.Content
-			.ReadFromJsonAsync<GameBetMajorInfoViewModel>(_SerializerOptions, cancellationToken)
+			.ReadFromJsonAsync<GameBetInfoViewModel>(_SerializerOptions, cancellationToken)
 			.ToAsyncEnumerable())
 		.FirstOrDefaultAsync(cancellationToken: cancellationToken)
 		.ConfigureAwait(false);
 
-	public async ValueTask<GameBetMajorInfoViewModel?> GameBetMajorGetAsync(DateTimeOffset externalCreatedOn, Guid id, CancellationToken cancellationToken = default)
+	public async ValueTask<GameBetInfoViewModel?> GameBetMajorGetAsync(DateTimeOffset externalCreatedOn, Guid id, CancellationToken cancellationToken = default)
 		=> await httpClient.GetAsync(
-			 requestUri: $"/game-bet-major/{id}?externalCreatedOn={externalCreatedOn:u}",
+			 requestUri: $"/game-bet-majors/{id}?externalCreatedOn={externalCreatedOn:u}",
 			 cancellationToken: cancellationToken)
 		.ToAsyncEnumerable()
 		.Do(response => response.EnsureSuccessStatusCode())
 		.Where(response => response.StatusCode == System.Net.HttpStatusCode.OK)
 		.SelectMany(response => response.Content
-			.ReadFromJsonAsync<GameBetMajorInfoViewModel>(_SerializerOptions, cancellationToken)
+			.ReadFromJsonAsync<GameBetInfoViewModel>(_SerializerOptions, cancellationToken)
 			.ToAsyncEnumerable())
 		.FirstOrDefaultAsync(cancellationToken: cancellationToken)
 		.ConfigureAwait(false);

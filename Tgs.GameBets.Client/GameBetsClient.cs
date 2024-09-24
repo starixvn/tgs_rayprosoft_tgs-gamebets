@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 
 using System.Text.Json.Serialization;
-using Tgs.GameBets.Common.ViewModels;
 
 namespace Tgs.GameBets.Client;
 

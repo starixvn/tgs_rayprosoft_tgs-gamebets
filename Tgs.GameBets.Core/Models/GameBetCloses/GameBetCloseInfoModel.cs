@@ -1,8 +1,7 @@
-﻿using System.Text.Json.Nodes;
-
-namespace Tgs.GameBets.Common.ViewModels;
-public record GameBetMajorInfoViewModel(
+﻿namespace Tgs.GameBets.Core.Models.GameBetCloses;
+public record GameBetCloseInfoModel(
 	Guid Id,
+	Guid GameBetId,
 	Guid GameProviderId,
 	Guid GameProviderConfigurationId,
 	int GameId,
@@ -18,13 +17,13 @@ public record GameBetMajorInfoViewModel(
 	DateTimeOffset ExternalClosedOn,
 	DateTimeOffset ExternalPayoffOn,
 	DateTimeOffset ExternalResettleOn,
-	Enums.BetState BetState,
-	Enums.BetType BetType,
-	Enums.FreeGameState FreeGameState,
-	Enums.GambleState GambleState,
-	Enums.CashoutState CashoutState,
-	Enums.ResettleState ResettleState,
-	Enums.JackpotState JackpotState,
+	Common.Enums.BetState BetState,
+	Common.Enums.BetType BetType,
+	Common.Enums.FreeGameState FreeGameState,
+	Common.Enums.GambleState GambleState,
+	Common.Enums.CashoutState CashoutState,
+	Common.Enums.ResettleState ResettleState,
+	Common.Enums.JackpotState JackpotState,
 	decimal CurrencyRatio,
 	decimal Bet,
 	decimal ValidBet,
@@ -37,4 +36,7 @@ public record GameBetMajorInfoViewModel(
 	DateTimeOffset CreatedOn,
 	DateTimeOffset ClosedOn,
 	DateTimeOffset UpdatedOn,
-	JsonNode AdditionalData);
+	Common.Enums.ResetState ResetState,
+	DateTimeOffset ResetOn,
+	string AdditionalData,
+	string ExtendedData);

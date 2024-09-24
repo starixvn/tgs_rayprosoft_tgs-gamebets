@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Text.Json.Nodes;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.GameBets.Core.ApplicationServices.GameBets;
 
@@ -106,16 +107,18 @@ public class GameBetController : ControllerBase
 				Bet: response.Bet,
 				ValidBet: response.ValidBet,
 				Settle: response.Settle,
-				Commission: response.Commission,
-				Turnover: response.Turnover,
 				WinLoss: response.WinLoss,
+				Turnover: response.Turnover,
+				Commission: response.Commission,
+				Contribute: 0.0m,
 				Jackpot: response.Jackpot,
 				CreatedOn: response.CreatedOn,
 				ClosedOn: response.ClosedOn,
 				UpdatedOn: response.UpdatedOn,
 				ResetState: response.ResetState,
 				ResetOn: response.ResetOn,
-				AdditionalData: response.AdditionalData);
+				AdditionalData: response.AdditionalData,
+				ExtendedData: new JsonObject { });
 	}
 
 	/// <summary>
@@ -172,15 +175,17 @@ public class GameBetController : ControllerBase
 				Bet: response.Bet,
 				ValidBet: response.ValidBet,
 				Settle: response.Settle,
-				Commission: response.Commission,
-				Turnover: response.Turnover,
 				WinLoss: response.WinLoss,
+				Turnover: response.Turnover,
+				Commission: response.Commission,
+				Contribute: 0.0m,
 				Jackpot: response.Jackpot,
 				CreatedOn: response.CreatedOn,
 				ClosedOn: response.ClosedOn,
 				UpdatedOn: response.UpdatedOn,
 				ResetState: response.ResetState,
 				ResetOn: response.ResetOn,
-				AdditionalData: response.AdditionalData);
+				AdditionalData: response.AdditionalData,
+				ExtendedData: new JsonObject { });
 	}
 }

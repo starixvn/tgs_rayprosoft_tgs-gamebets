@@ -29,13 +29,15 @@ public record GameBetInfoViewModel(
 	decimal Bet,
 	decimal ValidBet,
 	decimal Settle,
-	decimal Commission,
-	decimal Turnover,
 	decimal WinLoss,
+	decimal Turnover,
+	decimal Commission,
+	decimal Contribute,
 	decimal Jackpot,
 	DateTimeOffset CreatedOn,
 	DateTimeOffset ClosedOn,
 	DateTimeOffset UpdatedOn,
 	Enums.ResetState ResetState,
 	DateTimeOffset ResetOn,
-	JsonNode AdditionalData);
+	JsonNode AdditionalData,
+	JsonNode ExtendedData);

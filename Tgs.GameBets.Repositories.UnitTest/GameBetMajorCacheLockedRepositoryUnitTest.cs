@@ -476,7 +476,6 @@ public class GameBetMajorCacheLockedRepositoryUnitTest
 			ExternalCreatedOn: externalCreatedOn,
 			Bet: 100.0m,
 			ValidBet: 100.0m,
-			Turnover: 100.0m,
 			AdditionalData: new JsonObject
 			{
 				["ExternalRoundId"] = externalRoundId,
