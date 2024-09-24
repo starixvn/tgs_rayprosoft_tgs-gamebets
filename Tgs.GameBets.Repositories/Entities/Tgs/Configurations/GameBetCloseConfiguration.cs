@@ -17,19 +17,11 @@ namespace Tgs.GameBets.Entities.Configurations
 
             entity.ToTable("game_bet_closes", "dbo");
 
-            entity.HasIndex(e => new { e.ClosedOn, e.BetState }, "ix_game_bet_closes_bet_state");
-
             entity.HasIndex(e => new { e.ClosedOn, e.BrandId }, "ix_game_bet_closes_brand_id");
 
-            entity.HasIndex(e => e.ClosedOn, "ix_game_bet_closes_closed_on");
+            entity.HasIndex(e => new { e.ClosedOn, e.ExternalClosedOn }, "ix_game_bet_closes_external_closed_on");
 
-            entity.HasIndex(e => new { e.ClosedOn, e.CurrencyCode }, "ix_game_bet_closes_currency_code");
-
-            entity.HasIndex(e => new { e.ClosedOn, e.GameProviderId, e.GameId, e.WalletId, e.ExternalBetId }, "ix_game_bet_closes_external");
-
-            entity.HasIndex(e => new { e.ClosedOn, e.ExternalBetId }, "ix_game_bet_closes_external_bet_id");
-
-            entity.HasIndex(e => new { e.ClosedOn, e.ExternalRoundId }, "ix_game_bet_closes_external_round_id");
+            entity.HasIndex(e => new { e.ClosedOn, e.ExternalCreatedOn }, "ix_game_bet_closes_external_created_on");
 
             entity.HasIndex(e => new { e.ClosedOn, e.GameId }, "ix_game_bet_closes_game_id");
 
@@ -37,15 +29,11 @@ namespace Tgs.GameBets.Entities.Configurations
 
             entity.HasIndex(e => new { e.ClosedOn, e.Id }, "ix_game_bet_closes_id");
 
-            entity.HasIndex(e => new { e.ClosedOn, e.LicenseeId }, "ix_game_bet_closes_licensee_id");
-
             entity.HasIndex(e => new { e.ClosedOn, e.PlayerCode }, "ix_game_bet_closes_player_code");
-
-            entity.HasIndex(e => new { e.ClosedOn, e.ResellerId }, "ix_game_bet_closes_reseller_id");
 
             entity.HasIndex(e => new { e.ClosedOn, e.UpdatedOn }, "ix_game_bet_closes_updated_on");
 
-            entity.HasIndex(e => new { e.ClosedOn, e.WalletId }, "ix_game_bet_closes_wallet_id");
+            entity.HasIndex(e => new { e.ClosedOn, e.GameProviderId, e.GameId, e.WalletId, e.ExternalBetId }, "uix_game_bet_closes").IsUnique();
 
             entity.Property(e => e.ClosedOn)
                 .HasComment("結束時間")
