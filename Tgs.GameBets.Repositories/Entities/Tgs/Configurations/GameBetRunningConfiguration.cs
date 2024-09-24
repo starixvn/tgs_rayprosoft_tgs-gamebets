@@ -17,7 +17,7 @@ namespace Tgs.GameBets.Entities.Configurations
 
             entity.ToTable("game_bet_runnings", "dbo");
 
-            entity.HasIndex(e => new { e.GameProviderId, e.GameId, e.WalletId, e.ExternalBetId }, "uix_game_bet_runnings").IsUnique();
+            entity.HasIndex(e => new { e.GameProviderId, e.GameId, e.WalletId, e.ExternalBetId }, "ix_game_bet_runnings_game_provider_id_game_id_wallet_id_extern").IsUnique();
 
             entity.Property(e => e.GameBetMajorId)
                 .ValueGeneratedNever()
@@ -44,6 +44,7 @@ namespace Tgs.GameBets.Entities.Configurations
                 .HasColumnName("created_on");
             entity.Property(e => e.CurrencyCode)
                 .HasMaxLength(16)
+                .HasDefaultValueSql("''::character varying")
                 .HasComment("貨幣代碼")
                 .HasColumnName("currency_code");
             entity.Property(e => e.CurrencyRatio)
@@ -57,6 +58,7 @@ namespace Tgs.GameBets.Entities.Configurations
                 .HasColumnName("extended_data");
             entity.Property(e => e.ExternalBetId)
                 .HasMaxLength(255)
+                .HasDefaultValueSql("''::character varying")
                 .HasComment("三方投注單別碼")
                 .HasColumnName("external_bet_id");
             entity.Property(e => e.ExternalCreatedOn)
@@ -64,6 +66,7 @@ namespace Tgs.GameBets.Entities.Configurations
                 .HasColumnName("external_created_on");
             entity.Property(e => e.ExternalRoundId)
                 .HasMaxLength(255)
+                .HasDefaultValueSql("''::character varying")
                 .HasComment("三方局/回合識別碼")
                 .HasColumnName("external_round_id");
             entity.Property(e => e.GameId)
@@ -80,6 +83,7 @@ namespace Tgs.GameBets.Entities.Configurations
                 .HasColumnName("licensee_id");
             entity.Property(e => e.PlayerCode)
                 .HasMaxLength(16)
+                .HasDefaultValueSql("''::character varying")
                 .HasComment("玩家代碼")
                 .HasColumnName("player_code");
             entity.Property(e => e.ResellerId)

@@ -78,6 +78,7 @@ namespace Tgs.GameBets.Entities.Configurations
                 .HasColumnName("created_on");
             entity.Property(e => e.CurrencyCode)
                 .HasMaxLength(16)
+                .HasDefaultValueSql("''::character varying")
                 .HasComment("貨幣代碼")
                 .HasColumnName("currency_code");
             entity.Property(e => e.CurrencyRatio)
@@ -91,6 +92,7 @@ namespace Tgs.GameBets.Entities.Configurations
                 .HasColumnName("extended_data");
             entity.Property(e => e.ExternalBetId)
                 .HasMaxLength(255)
+                .HasDefaultValueSql("''::character varying")
                 .HasComment("三方投注單別碼")
                 .HasColumnName("external_bet_id");
             entity.Property(e => e.ExternalClosedOn)
@@ -107,6 +109,7 @@ namespace Tgs.GameBets.Entities.Configurations
                 .HasColumnName("external_resettle_on");
             entity.Property(e => e.ExternalRoundId)
                 .HasMaxLength(255)
+                .HasDefaultValueSql("''::character varying")
                 .HasComment("三方局/回合識別碼")
                 .HasColumnName("external_round_id");
             entity.Property(e => e.FreeGameState)
@@ -142,6 +145,7 @@ namespace Tgs.GameBets.Entities.Configurations
                 .HasColumnName("licensee_id");
             entity.Property(e => e.PlayerCode)
                 .HasMaxLength(16)
+                .HasDefaultValueSql("''::character varying")
                 .HasComment("玩家代碼")
                 .HasColumnName("player_code");
             entity.Property(e => e.ResellerId)
