@@ -1,11 +1,13 @@
 ﻿using System.Net.Mime;
 using System.Text.Json.Serialization;
+using EFCoreSecondLevelCacheInterceptor;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using StackExchange.Redis;
 using Tgs.GameBets;
 
 var filterInstrumentations = new[] { "html", "ico", "png", "jpg" };
@@ -64,9 +66,44 @@ builder.Services
 			builder => builder.EnableRetryOnFailure(
 				maxRetryCount: 5,
 				maxRetryDelay: TimeSpan.FromSeconds(10),
-				errorCodesToAdd: null));
+				errorCodesToAdd: null))
+			.AddInterceptors(sp.GetRequiredService<SecondLevelCacheInterceptor>());
 	},
 	(IServiceProvider sp) => sp.GetRequiredService<RedisConnectionManager>().Database);
+
+const string ef2ndCacheName = "ef2nd_cache";
+builder.Services
+	.AddEFSecondLevelCache(options =>
+		options
+			.UseEasyCachingCoreProvider(
+				providerName: ef2ndCacheName,
+				isHybridCache: false)
+			.UseCacheKeyPrefix("EFCACHE_")
+			.UseDbCallsIfCachingProviderIsDown(TimeSpan.FromMinutes(1))
+			.CacheQueriesContainingTypes(
+				expirationMode: CacheExpirationMode.Absolute,
+				timeout: TimeSpan.FromMinutes(10),
+				tableTypeComparison: TableTypeComparison.ContainsOnly,
+				entityTypes: [typeof(Tgs.GameBets.Entities.GameBetRunning)])
+	)
+	// 不能使用 AddEasyCaching(Action<IServiceProvider, EasyCachingOptions>) 版 delegate 來取得 Configuration
+	// 有無法順利註冊服務的 bug. 需要使用 AddEasyCaching(Action<EasyCachingOptions>) 直接從 web app builder 拿
+	// ref: https://github.com/dotnetcore/EasyCaching/issues/273
+	.AddEasyCaching(options =>
+	{
+		var connectionString = builder.Configuration.GetConnectionString("Redis")!;
+		var configurationOptions = ConfigurationOptions.Parse(connectionString);
+		const string ezCacheSeriailzerName = "ez_cache_serializer";
+		options
+			.UseRedis(
+				configure: config =>
+				{
+					config.DBConfig.ConfigurationOptions = configurationOptions;
+					config.SerializerName = ezCacheSeriailzerName;
+				},
+				name: ef2ndCacheName)
+			.WithMessagePack(ezCacheSeriailzerName);
+	});
 
 builder.Services
 	.AddOpenTelemetry()
