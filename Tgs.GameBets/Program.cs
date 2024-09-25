@@ -1,5 +1,6 @@
 ﻿using System.Net.Mime;
 using System.Text.Json.Serialization;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -76,7 +77,8 @@ builder.Services
 		.AddSource("Tgs.*")
 		.AddSource("TGS.*")
 		.AddSource("Valhalla.*")
-		.AddSource("MediatR.*")
+		.AddSource("MediatR")
+		.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService($"{Environment.OSVersion}"))
 		.AddAspNetCoreInstrumentation(options => options.Filter =
 		httpContext => !httpContext.Request.Path.HasValue
 			|| !httpContext.Request.Path.StartsWithSegments("/swagger")
@@ -96,8 +98,7 @@ builder.Services
 		.AddAspNetCoreInstrumentation()
 		.AddOtlpExporter())
 	.Services
-	.AddInterceptionService()
-	.AddServiceUtiltiyInterceptors();
+	.AddTransient(typeof(IPipelineBehavior<,>), typeof(TelemetryBehavior<,>));
 
 builder.Services.AddHealthChecks();
 
