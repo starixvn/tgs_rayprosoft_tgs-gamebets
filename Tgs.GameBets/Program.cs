@@ -73,7 +73,7 @@ builder.Services
 	(IServiceProvider sp) => sp.GetRequiredService<RedisConnectionManager>().Database);
 
 const string ef2ndCacheName = "ef2nd_cache";
-string redisPrefix = "efcache_" + Assembly.GetExecutingAssembly().GetName().Name!.Replace(".", "_").ToLowerInvariant();
+string redisPrefix = "tgs-gamebets-efcache";
 builder.Services
 	.AddEFSecondLevelCache(options =>
 		options
