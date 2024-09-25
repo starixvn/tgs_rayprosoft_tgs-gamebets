@@ -1,4 +1,5 @@
 ﻿using System.Net.Mime;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using EFCoreSecondLevelCacheInterceptor;
 using Microsoft.AspNetCore.Mvc;
@@ -72,13 +73,14 @@ builder.Services
 	(IServiceProvider sp) => sp.GetRequiredService<RedisConnectionManager>().Database);
 
 const string ef2ndCacheName = "ef2nd_cache";
+string redisPrefix = "efcache_" + Assembly.GetExecutingAssembly().GetName().Name!.Replace(".", "_").ToLowerInvariant();
 builder.Services
 	.AddEFSecondLevelCache(options =>
 		options
 			.UseEasyCachingCoreProvider(
 				providerName: ef2ndCacheName,
 				isHybridCache: false)
-			.UseCacheKeyPrefix("EFCACHE_")
+			.UseCacheKeyPrefix(redisPrefix)
 			.UseDbCallsIfCachingProviderIsDown(TimeSpan.FromMinutes(1))
 			.CacheQueriesContainingTypes(
 				expirationMode: CacheExpirationMode.Absolute,
@@ -100,6 +102,7 @@ builder.Services
 				{
 					config.DBConfig.ConfigurationOptions = configurationOptions;
 					config.SerializerName = ezCacheSeriailzerName;
+					// config.EnableLogging = true; // 可以從 log 中確認 cache missed 或 cache hit
 				},
 				name: ef2ndCacheName)
 			.WithMessagePack(ezCacheSeriailzerName);
