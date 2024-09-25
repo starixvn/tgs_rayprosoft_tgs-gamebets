@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using NSubstitute;
 using Tgs.GameBets.Core.Models.GameBetCloses;
-using Tgs.GameBets.Core.Models.GameBets;
 using Tgs.GameBets.Entities;
 
 namespace Tgs.GameBets.Repositories.UnitTest;

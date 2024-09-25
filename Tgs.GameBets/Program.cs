@@ -1,6 +1,5 @@
 ﻿using System.Net.Mime;
 using System.Text.Json.Serialization;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -78,6 +77,7 @@ builder.Services
 		.AddSource("TGS.*")
 		.AddSource("Valhalla.*")
 		.AddSource("MediatR")
+		.AddHttpClientInstrumentation()
 		.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService($"{Environment.OSVersion}"))
 		.AddAspNetCoreInstrumentation(options => options.Filter =
 		httpContext => !httpContext.Request.Path.HasValue
@@ -96,9 +96,7 @@ builder.Services
 		.AddEnvironmentVariableDetector())
 		.AddRuntimeInstrumentation()
 		.AddAspNetCoreInstrumentation()
-		.AddOtlpExporter())
-	.Services
-	.AddTransient(typeof(IPipelineBehavior<,>), typeof(TelemetryBehavior<,>));
+		.AddOtlpExporter());
 
 builder.Services.AddHealthChecks();
 
