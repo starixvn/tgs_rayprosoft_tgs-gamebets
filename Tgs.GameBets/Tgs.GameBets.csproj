@@ -10,6 +10,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="EasyCaching.Redis" Version="1.9.2" />
+		<PackageReference Include="EasyCaching.Serialization.MessagePack" Version="1.9.2" />
+		<PackageReference Include="EFCoreSecondLevelCacheInterceptor" Version="4.8.0" />
 		<PackageReference Include="FluentdForward.OpenTelemetry.MessagePack" Version="0.3.8" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
 		<PackageReference Include="Npgsql.OpenTelemetry" Version="8.0.4" />
