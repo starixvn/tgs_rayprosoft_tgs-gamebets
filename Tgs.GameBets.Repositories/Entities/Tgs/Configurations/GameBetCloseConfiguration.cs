@@ -17,6 +17,8 @@ namespace Tgs.GameBets.Entities.Configurations
 
             entity.ToTable("game_bet_closes", "dbo");
 
+            entity.HasIndex(e => new { e.ClosedOn, e.BetState }, "ix_game_bet_closes_closed_on_bet_state");
+
             entity.HasIndex(e => new { e.ClosedOn, e.BrandId }, "ix_game_bet_closes_closed_on_brand_id");
 
             entity.HasIndex(e => new { e.ClosedOn, e.ExternalClosedOn }, "ix_game_bet_closes_closed_on_external_closed_on");
@@ -27,13 +29,15 @@ namespace Tgs.GameBets.Entities.Configurations
 
             entity.HasIndex(e => new { e.ClosedOn, e.GameProviderId }, "ix_game_bet_closes_closed_on_game_provider_id");
 
-            entity.HasIndex(e => new { e.ClosedOn, e.GameProviderId, e.GameId, e.WalletId, e.ExternalBetId }, "ix_game_bet_closes_closed_on_game_provider_id_game_id_wallet_i").IsUnique();
-
             entity.HasIndex(e => new { e.ClosedOn, e.Id }, "ix_game_bet_closes_closed_on_id");
 
             entity.HasIndex(e => new { e.ClosedOn, e.PlayerCode }, "ix_game_bet_closes_closed_on_player_code");
 
             entity.HasIndex(e => new { e.ClosedOn, e.UpdatedOn }, "ix_game_bet_closes_closed_on_updated_on");
+
+            entity.HasIndex(e => new { e.ClosedOn, e.GameProviderId, e.GameId, e.PlayerCode, e.ExternalBetId }, "ix_game_bet_closes_player_code_composite");
+
+            entity.HasIndex(e => new { e.ClosedOn, e.GameProviderId, e.GameId, e.WalletId, e.ExternalBetId }, "ux_game_bet_closes").IsUnique();
 
             entity.Property(e => e.ClosedOn)
                 .HasComment("結束時間")

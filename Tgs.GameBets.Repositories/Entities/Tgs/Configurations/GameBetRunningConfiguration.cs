@@ -17,7 +17,17 @@ namespace Tgs.GameBets.Entities.Configurations
 
             entity.ToTable("game_bet_runnings", "dbo");
 
-            entity.HasIndex(e => new { e.GameProviderId, e.GameId, e.WalletId, e.ExternalBetId }, "ix_game_bet_runnings_game_provider_id_game_id_wallet_id_extern").IsUnique();
+            entity.HasIndex(e => e.BrandId, "ix_game_bet_runnings_brand_id");
+
+            entity.HasIndex(e => e.GameId, "ix_game_bet_runnings_game_id");
+
+            entity.HasIndex(e => e.GameProviderId, "ix_game_bet_runnings_game_provider_id");
+
+            entity.HasIndex(e => e.PlayerCode, "ix_game_bet_runnings_player_code");
+
+            entity.HasIndex(e => new { e.GameProviderId, e.GameId, e.PlayerCode, e.ExternalBetId }, "ix_game_bet_runnings_player_code_composite");
+
+            entity.HasIndex(e => new { e.GameProviderId, e.GameId, e.WalletId, e.ExternalBetId }, "ux_game_bet_runnings").IsUnique();
 
             entity.Property(e => e.GameBetMajorId)
                 .ValueGeneratedNever()
