@@ -17,25 +17,27 @@ namespace Tgs.GameBets.Entities.Configurations
 
             entity.ToTable("game_bet_closes", "dbo");
 
-            entity.HasIndex(e => new { e.ClosedOn, e.BetState }, "ix_game_bet_closes_closed_on_bet_state");
+            entity.HasIndex(e => new { e.ClosedOn, e.BrandId }, "ix_game_bet_closes_brand_id");
 
-            entity.HasIndex(e => new { e.ClosedOn, e.BrandId }, "ix_game_bet_closes_closed_on_brand_id");
+            entity.HasIndex(e => e.ClosedOn, "ix_game_bet_closes_closed_on");
 
-            entity.HasIndex(e => new { e.ClosedOn, e.ExternalClosedOn }, "ix_game_bet_closes_closed_on_external_closed_on");
+            entity.HasIndex(e => new { e.ClosedOn, e.CurrencyCode }, "ix_game_bet_closes_currency_code");
 
-            entity.HasIndex(e => new { e.ClosedOn, e.ExternalCreatedOn }, "ix_game_bet_closes_closed_on_external_created_on");
+            entity.HasIndex(e => new { e.ClosedOn, e.ExternalBetId }, "ix_game_bet_closes_external_bet_id");
 
-            entity.HasIndex(e => new { e.ClosedOn, e.GameId }, "ix_game_bet_closes_closed_on_game_id");
+            entity.HasIndex(e => new { e.ClosedOn, e.ExternalClosedOn }, "ix_game_bet_closes_external_closed_on");
 
-            entity.HasIndex(e => new { e.ClosedOn, e.GameProviderId }, "ix_game_bet_closes_closed_on_game_provider_id");
+            entity.HasIndex(e => new { e.ClosedOn, e.ExternalCreatedOn }, "ix_game_bet_closes_external_created_on");
 
-            entity.HasIndex(e => new { e.ClosedOn, e.Id }, "ix_game_bet_closes_closed_on_id");
+            entity.HasIndex(e => new { e.ClosedOn, e.ExternalRoundId }, "ix_game_bet_closes_external_round_id");
 
-            entity.HasIndex(e => new { e.ClosedOn, e.PlayerCode }, "ix_game_bet_closes_closed_on_player_code");
+            entity.HasIndex(e => new { e.ClosedOn, e.GameId }, "ix_game_bet_closes_game_id");
 
-            entity.HasIndex(e => new { e.ClosedOn, e.UpdatedOn }, "ix_game_bet_closes_closed_on_updated_on");
+            entity.HasIndex(e => new { e.ClosedOn, e.GameProviderId }, "ix_game_bet_closes_game_provider_id");
 
-            entity.HasIndex(e => new { e.ClosedOn, e.GameProviderId, e.GameId, e.PlayerCode, e.ExternalBetId }, "ix_game_bet_closes_player_code_composite");
+            entity.HasIndex(e => new { e.ClosedOn, e.PlayerCode }, "ix_game_bet_closes_player_code");
+
+            entity.HasIndex(e => new { e.ClosedOn, e.UpdatedOn }, "ix_game_bet_closes_updated_on");
 
             entity.HasIndex(e => new { e.ClosedOn, e.GameProviderId, e.GameId, e.WalletId, e.ExternalBetId }, "ux_game_bet_closes").IsUnique();
 
