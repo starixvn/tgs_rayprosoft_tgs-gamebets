@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Tgs.GameBets.Client;
 using Tgs.GameBets.Core.ApplicationServices.GameBetCloses;
-using Tgs.GameBets.Core.ApplicationServices.GameBets;
 
 namespace Tgs.GameBets.IntegrationUnitTest;
 public class GameBetsClientGameBetCloses

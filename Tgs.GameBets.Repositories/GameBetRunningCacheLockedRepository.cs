@@ -3,17 +3,16 @@ using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using Tgs.GameBets.Core;
-using Tgs.GameBets.Core.Models.GameBets;
+using Tgs.GameBets.Core.Models.GameBetRunnings;
 
 namespace Tgs.GameBets.Repositories;
-
-internal class GameBetCacheLockedRepository(
-	IGameBetRepository repository,
+internal class GameBetRunningCacheLockedRepository(
+	IGameBetRunningRepository repository,
 	IDatabase database,
 	TimeSpan expiry,
-	ILogger<GameBetCacheLockedRepository> logger) : IGameBetRepository
+	ILogger<GameBetRunningCacheLockedRepository> logger) : IGameBetRunningRepository
 {
-	public async ValueTask AddAsync(GameBetAddModel source, CancellationToken cancellationToken = default)
+	public async ValueTask AddAsync(GameBetRunningAddModel source, CancellationToken cancellationToken = default)
 	{
 		try
 		{
@@ -39,14 +38,14 @@ internal class GameBetCacheLockedRepository(
 				JsonSerializer.Serialize(new
 				{
 					LogOn = DateTime.Now.ToString("u"),
-					source.Id,
+					source.GameBetId,
 					source.GameProviderId,
 					source.GameId,
 					source.PlayerCode,
+					source.CurrencyCode,
 					source.WalletId,
 					source.ExternalBetId,
 					ExternalCreatedOn = source.ExternalCreatedOn.ToString("u"),
-					BetState = source.BetState.ToString(),
 					Message = "An exception has occurred when adding bets to this game"
 				}));
 
@@ -60,18 +59,15 @@ internal class GameBetCacheLockedRepository(
 			throw;
 		}
 	}
-
-	public ValueTask<GameBetInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
-		=> repository.GetAsync(externalCreatedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
-
-	public ValueTask<GameBetInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid id, CancellationToken cancellationToken = default)
-		=> repository.GetAsync(externalCreatedOn, id, cancellationToken);
-
-	public ValueTask UpdateAsync(GameBetUpdateModel source, CancellationToken cancellationToken = default)
+	public ValueTask DeleteAsync(Guid gameBetId, CancellationToken cancellationToken = default)
+		=> repository.DeleteAsync(gameBetId, cancellationToken);
+	public ValueTask<GameBetRunningInfoModel?> GetAsync(Guid gameBetId, CancellationToken cancellationToken = default)
+		=> repository.GetAsync(gameBetId, cancellationToken);
+	public ValueTask UpdateAsync(GameBetRunningUpdateModel source, CancellationToken cancellationToken = default)
 		=> repository.UpdateAsync(source, cancellationToken);
 
 	private static string GetKey(Guid gameProviderId, int gameId, Guid walletId, string externalBetId)
-			=> string.Concat(typeof(GameBetCacheLockedRepository).Namespace!.Replace('.', '-').ToLower(), "bet", ":", "cache", ":", "locked", gameProviderId, ":", gameId, ":", walletId, ":", externalBetId);
+		=> string.Concat(typeof(GameBetRunningCacheLockedRepository).Namespace!.Replace('.', '-').ToLower(), "bet-running", ":", "cache", ":", "locked", gameProviderId, ":", gameId, ":", walletId, ":", externalBetId);
 
 	private async ValueTask<bool> SetKeyAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId)
 		=> await database.StringSetAsync(
