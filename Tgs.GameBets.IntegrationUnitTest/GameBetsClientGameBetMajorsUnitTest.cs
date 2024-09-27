@@ -318,7 +318,7 @@ public class GameBetsClientGameBetMajorsUnitTest
 		var httpClient = web.CreateDefaultClient();
 		var client = new GameBetsClient(httpClient);
 
-		var actual = await client.GameBetGetAsync(externalCreatedOn, id);
+		var actual = await client.GameBetMajorGetAsync(externalCreatedOn, id);
 
 		Assert.Null(actual);
 	}
