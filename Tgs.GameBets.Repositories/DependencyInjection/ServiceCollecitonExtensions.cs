@@ -17,12 +17,12 @@ public static class ServiceCollecitonExtensions
 
 		.AddTransient<IGameBetMajorRepository, GameBetMajorRepository>()
 		.Decorate<IGameBetMajorRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<GameBetMajorCacheLockedRepository>(sp, innerRepository, redisDatabaseResolver(sp), TimeSpan.FromMinutes(1)))
-		.Decorate<IGameBetMajorRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<GameBetMajorCacheGetRepository>(sp, innerRepository, redisDatabaseResolver(sp), TimeSpan.FromMinutes(1)))
+		.Decorate<IGameBetMajorRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<GameBetMajorCacheGetRepository>(sp, innerRepository, redisDatabaseResolver(sp), TimeSpan.FromMinutes(4.5)))
 
 		.AddTransient<IGameBetRunningRepository, GameBetRunningRepository>()
 		.Decorate<IGameBetRunningRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<GameBetRunningCacheLockedRepository>(sp, innerRepository, redisDatabaseResolver(sp), TimeSpan.FromMinutes(1)))
 
 		.AddTransient<IGameBetCloseRepository, GameBetCloseRepository>()
 		.Decorate<IGameBetCloseRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<GameBetCloseCacheLockedRepository>(sp, innerRepository, redisDatabaseResolver(sp), TimeSpan.FromMinutes(1)))
-		.Decorate<IGameBetCloseRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<GameBetCloseCacheGetRepository>(sp, innerRepository, redisDatabaseResolver(sp), TimeSpan.FromMinutes(1)));
+		.Decorate<IGameBetCloseRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<GameBetCloseCacheGetRepository>(sp, innerRepository, redisDatabaseResolver(sp), TimeSpan.FromMinutes(4.5)));
 }

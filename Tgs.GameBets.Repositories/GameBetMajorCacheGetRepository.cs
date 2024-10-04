@@ -20,44 +20,25 @@ internal class GameBetMajorCacheGetRepository(
 
 	public async ValueTask<GameBetMajorInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
 	{
+		GameBetMajorInfoModel? model;
+		bool cacheWorking = false;
 		try
 		{
-			var model = await GetFromCacheAsync(
+			model = await GetFromCacheAsync(
 				gameProviderId: gameProviderId,
 				gameId: gameId,
 				walletId: walletId,
 				externalBetId: externalBetId)
 				.ConfigureAwait(false);
 
-			if (model is null)
-			{
-				model = await repository
-					.GetAsync(
-						externalCreatedOn: externalCreatedOn,
-						gameProviderId: gameProviderId,
-						gameId: gameId,
-						walletId: walletId,
-						externalBetId: externalBetId,
-						cancellationToken: cancellationToken)
-					.ConfigureAwait(false);
+			if (model is not null)
+				return model;
 
-				if (model is not null)
-				{
-					await SetToCacheAsync(
-							gameProviderId: gameProviderId,
-							gameId: gameId,
-							walletId: walletId,
-							externalBetId: externalBetId,
-							model: model)
-						.ConfigureAwait(false);
-				}
-			}
-
-			return model;
+			cacheWorking = true;
 		}
 		catch (Exception ex)
 		{
-			logger.LogError(ex, "{logError}",
+			logger.LogWarning(ex, "{logWarning}",
 				JsonSerializer.Serialize(new
 				{
 					LogOn = DateTime.Now.ToString("u"),
@@ -68,42 +49,67 @@ internal class GameBetMajorCacheGetRepository(
 					externalBetId,
 					Message = "An exception has occurred when get bets to this game"
 				}));
-
-			throw;
 		}
+
+		model = await repository
+			.GetAsync(
+				externalCreatedOn: externalCreatedOn,
+				gameProviderId: gameProviderId,
+				gameId: gameId,
+				walletId: walletId,
+				externalBetId: externalBetId,
+				cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+
+		if (model is not null && cacheWorking)
+		{
+			try
+			{
+				await SetToCacheAsync(
+						gameProviderId: gameProviderId,
+						gameId: gameId,
+						walletId: walletId,
+						externalBetId: externalBetId,
+						model: model)
+					.ConfigureAwait(false);
+			}
+			catch (Exception ex)
+			{
+				logger.LogWarning(ex, "{logWarning}",
+					JsonSerializer.Serialize(new
+					{
+						LogOn = DateTime.Now.ToString("u"),
+						externalCreatedOn,
+						gameProviderId,
+						gameId,
+						walletId,
+						externalBetId,
+						Message = "An exception has occurred when cache bets to this game"
+					}));
+			}
+		}
+
+		return model;
 	}
 
 	public async ValueTask<GameBetMajorInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid id, CancellationToken cancellationToken = default)
 	{
+		GameBetMajorInfoModel? model;
+		bool cacheWorking = false;
 		try
 		{
-			var model = await GetFromCacheAsync(
+			model = await GetFromCacheAsync(
 				id: id)
 				.ConfigureAwait(false);
 
-			if (model is null)
-			{
-				model = await repository
-					.GetAsync(
-						externalCreatedOn: externalCreatedOn,
-						id: id,
-						cancellationToken: cancellationToken)
-					.ConfigureAwait(false);
+			if (model is not null)
+				return model;
 
-				if (model is not null)
-				{
-					await SetToCacheAsync(
-							id: id,
-							model: model)
-						.ConfigureAwait(false);
-				}
-			}
-
-			return model;
+			cacheWorking = true;
 		}
 		catch (Exception ex)
 		{
-			logger.LogError(ex, "{logError}",
+			logger.LogWarning(ex, "{logWarning}",
 				JsonSerializer.Serialize(new
 				{
 					LogOn = DateTime.Now.ToString("u"),
@@ -111,9 +117,38 @@ internal class GameBetMajorCacheGetRepository(
 					id,
 					Message = "An exception has occurred when get bets to this game"
 				}));
-
-			throw;
 		}
+
+		model = await repository
+			.GetAsync(
+				externalCreatedOn: externalCreatedOn,
+				id: id,
+				cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+
+		if (model is not null && cacheWorking)
+		{
+			try
+			{
+				await SetToCacheAsync(
+						id: id,
+						model: model)
+					.ConfigureAwait(false);
+			}
+			catch (Exception ex)
+			{
+				logger.LogWarning(ex, "{logWarning}",
+					JsonSerializer.Serialize(new
+					{
+						LogOn = DateTime.Now.ToString("u"),
+						externalCreatedOn,
+						id,
+						Message = "An exception has occurred when cache bets to this game"
+					}));
+			}
+		}
+
+		return model;
 	}
 
 	public async ValueTask ReopenAsync(GameBetMajorReopenModel source, CancellationToken cancellationToken = default)
@@ -206,35 +241,35 @@ internal class GameBetMajorCacheGetRepository(
 
 	private async ValueTask<GameBetMajorInfoModel?> GetFromCacheAsync(Guid gameProviderId, int gameId, Guid walletId, string externalBetId)
 	{
-		var bytes = (byte[]?)await database
+		var json = (string?)await database
 			.StringGetAsync(
 				key: GetKey(gameProviderId, gameId, walletId, externalBetId),
 				flags: CommandFlags.None)
 			.ConfigureAwait(false);
-		return bytes is null
+		return string.IsNullOrWhiteSpace(json)
 			? null
-			: JsonSerializer.Deserialize<GameBetMajorInfoModel>(bytes);
+			: JsonSerializer.Deserialize<GameBetMajorInfoModel>(json);
 	}
 
 	private async ValueTask<GameBetMajorInfoModel?> GetFromCacheAsync(Guid id)
 	{
-		var bytes = (byte[]?)await database
+		var json = (string?)await database
 			.StringGetAsync(
 				key: GetKey(id),
 				flags: CommandFlags.None)
 			.ConfigureAwait(false);
-		return bytes is null
+		return string.IsNullOrWhiteSpace(json)
 			? null
-			: JsonSerializer.Deserialize<GameBetMajorInfoModel>(bytes);
+			: JsonSerializer.Deserialize<GameBetMajorInfoModel>(json);
 	}
 
 	private async ValueTask SetToCacheAsync(Guid gameProviderId, int gameId, Guid walletId, string externalBetId, GameBetMajorInfoModel model)
 		=> await database
 			.StringSetAsync(
 				key: GetKey(gameProviderId, gameId, walletId, externalBetId),
-				value: JsonSerializer.SerializeToUtf8Bytes(model),
+				value: JsonSerializer.Serialize(model),
 				expiry: expiry,
-				when: When.Always,
+				when: When.NotExists,
 				flags: CommandFlags.FireAndForget)
 			.ConfigureAwait(false);
 
@@ -242,9 +277,9 @@ internal class GameBetMajorCacheGetRepository(
 		=> await database
 			.StringSetAsync(
 				key: GetKey(id),
-				value: JsonSerializer.SerializeToUtf8Bytes(model),
+				value: JsonSerializer.Serialize(model),
 				expiry: expiry,
-				when: When.Always,
+				when: When.NotExists,
 				flags: CommandFlags.FireAndForget)
 			.ConfigureAwait(false);
 
