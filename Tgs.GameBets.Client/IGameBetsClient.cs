@@ -19,4 +19,10 @@ public interface IGameBetsClient
 	ValueTask GameBetRunningDeleteAsync(Guid gameBetId, CancellationToken cancellationToken = default);
 
 	ValueTask<Common.ViewModels.GameBetInfoViewModel?> GameBetRunningGetAsync(Guid gameBetId, CancellationToken cancellationToken = default);
+
+	ValueTask<bool> GameBetRapidTestCommandAsync(Common.ViewModels.GameBetRapidTestCommandViewModel source, CancellationToken cancellationToken = default);
+
+	ValueTask GameBetRapidTestExpireAsync(string gameProviderCode, CancellationToken cancellationToken = default);
+
+	ValueTask GameBetRapidTestInitializationAsync(string gameProviderCode, CancellationToken cancellationToken = default);
 }

@@ -211,8 +211,11 @@ internal class GameBetMajorCacheGetRepository(
 		}
 	}
 
+	public ValueTask<bool> ExistsAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
+		=> repository.ExistsAsync(externalCreatedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
+
 	private static string GetKey(Guid gameProviderId, int gameId, Guid walletId, string externalBetId)
-		=> string.Concat([
+			=> string.Concat([
 			typeof(GameBetMajorCacheGetRepository).Namespace!.Replace('.', '-').ToLower(),
 			"bet-major",
 			":",

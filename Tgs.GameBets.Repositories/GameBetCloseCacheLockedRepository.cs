@@ -6,6 +6,7 @@ using Tgs.GameBets.Core;
 using Tgs.GameBets.Core.Models.GameBetCloses;
 
 namespace Tgs.GameBets.Repositories;
+
 internal class GameBetCloseCacheLockedRepository(
 	IGameBetCloseRepository repository,
 	IDatabase database,
@@ -61,10 +62,13 @@ internal class GameBetCloseCacheLockedRepository(
 			throw;
 		}
 	}
+
 	public ValueTask<GameBetCloseInfoModel?> GetAsync(DateTimeOffset closedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
 		=> repository.GetAsync(closedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
+
 	public ValueTask<GameBetCloseInfoModel?> GetAsync(DateTimeOffset closedOn, Guid gameBetId, CancellationToken cancellationToken = default)
 		=> repository.GetAsync(closedOn, gameBetId, cancellationToken);
+
 	public ValueTask UpdateAsync(GameBetCloseUpdateModel source, CancellationToken cancellationToken = default)
 		=> repository.UpdateAsync(source, cancellationToken);
 
@@ -92,4 +96,6 @@ internal class GameBetCloseCacheLockedRepository(
 			key: GetKey(gameProviderId, gameId, walletId, externalBetId),
 			flags: CommandFlags.FireAndForget)
 		.ConfigureAwait(false);
+	public ValueTask<bool> ExistsAsync(DateTimeOffset closedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
+		=> repository.ExistsAsync(closedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
 }

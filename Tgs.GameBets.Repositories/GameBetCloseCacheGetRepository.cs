@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using Tgs.GameBets.Core;
@@ -255,4 +255,6 @@ internal class GameBetCloseCacheGetRepository(
 				key: GetKey(gameBetId),
 				flags: CommandFlags.FireAndForget)
 			.ConfigureAwait(false);
+	public ValueTask<bool> ExistsAsync(DateTimeOffset closedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
+		=> repository.ExistsAsync(closedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
 }

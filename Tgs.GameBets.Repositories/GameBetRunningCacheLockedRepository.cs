@@ -6,6 +6,7 @@ using Tgs.GameBets.Core;
 using Tgs.GameBets.Core.Models.GameBetRunnings;
 
 namespace Tgs.GameBets.Repositories;
+
 internal class GameBetRunningCacheLockedRepository(
 	IGameBetRunningRepository repository,
 	IDatabase database,
@@ -59,10 +60,13 @@ internal class GameBetRunningCacheLockedRepository(
 			throw;
 		}
 	}
+
 	public ValueTask DeleteAsync(Guid gameBetId, CancellationToken cancellationToken = default)
 		=> repository.DeleteAsync(gameBetId, cancellationToken);
+
 	public ValueTask<GameBetRunningInfoModel?> GetAsync(Guid gameBetId, CancellationToken cancellationToken = default)
 		=> repository.GetAsync(gameBetId, cancellationToken);
+
 	public ValueTask UpdateAsync(GameBetRunningUpdateModel source, CancellationToken cancellationToken = default)
 		=> repository.UpdateAsync(source, cancellationToken);
 

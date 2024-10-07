@@ -100,4 +100,6 @@ internal class GameBetMajorCacheLockedRepository(
 			key: GetKey(gameProviderId, gameId, walletId, externalBetId),
 			flags: CommandFlags.FireAndForget)
 		.ConfigureAwait(false);
+	public ValueTask<bool> ExistsAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
+		=> repository.ExistsAsync(externalCreatedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
 }

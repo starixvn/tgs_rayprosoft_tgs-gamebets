@@ -6,6 +6,7 @@ using Tgs.GameBets.Client;
 using Tgs.GameBets.Core.ApplicationServices.GameBetCloses;
 
 namespace Tgs.GameBets.IntegrationUnitTest;
+
 public class GameBetsClientGameBetCloses
 {
 	[Fact]
