@@ -1,5 +1,4 @@
 ﻿using System.Net.Mime;
-using System.Reflection;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +6,6 @@ using Npgsql;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using StackExchange.Redis;
 using Tgs.GameBets;
 
 var filterInstrumentations = new[] { "html", "ico", "png", "jpg" };
@@ -56,10 +54,18 @@ builder.Services
 		options.ConnectionString = configuration.GetConnectionString("Redis")!;
 	})
 	.Services
+	.AddOptions<MongoDBOptions>()
+	.Configure((MongoDBOptions options, IServiceProvider sp) =>
+	{
+		var configuration = sp.GetRequiredService<IConfiguration>();
+		options.ConnectionString = configuration.GetConnectionString("Mongo")!;
+	})
+	.Services
 	.AddSingleton<RedisConnectionManager>()
+	.AddSingleton<MongoDBConnectionManager>()
 	.AddGameBetsCore()
 	.AddGameBetsRepositories(
-	(IServiceProvider sp, DbContextOptionsBuilder dbBuilder) =>
+	dbContextOptions: (IServiceProvider sp, DbContextOptionsBuilder dbBuilder) =>
 	{
 		var config = sp.GetRequiredService<IConfiguration>();
 		_ = dbBuilder.UseNpgsql(config.GetConnectionString("Tgs"),
@@ -68,7 +74,8 @@ builder.Services
 				maxRetryDelay: TimeSpan.FromSeconds(10),
 				errorCodesToAdd: null));
 	},
-	(IServiceProvider sp) => sp.GetRequiredService<RedisConnectionManager>().Database);
+	mongoClientResolver: (IServiceProvider sp) => sp.GetRequiredService<MongoDBConnectionManager>().MongoClient,
+	redisDatabaseResolver: (IServiceProvider sp) => sp.GetRequiredService<RedisConnectionManager>().Database);
 
 builder.Services
 	.AddOpenTelemetry()

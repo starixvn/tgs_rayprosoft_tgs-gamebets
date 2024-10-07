@@ -9,6 +9,9 @@
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+    <PackageReference Include="MongoDB.Bson" Version="2.29.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.29.0" />
+    <PackageReference Include="Polly" Version="8.4.2" />
     <PackageReference Include="Tgs.SerialNumberGenerator" Version="1.0.1" />
   </ItemGroup>
 

@@ -1,0 +1,33 @@
+﻿using MediatR;
+
+namespace Tgs.GameBets.Core.ApplicationServices.GameBetRapidTests;
+public record GameBetRapidTestCommandRequest(
+	string GameProviderCode,
+	string SubGameProviderCode,
+	int GameId,
+	string ResellerCode,
+	string LicenseeCode,
+	string BrandCode,
+	string PlayerCode,
+	string Username,
+	string CurrencyCode,
+	Guid WalletId,
+	string ExternalRoundId,
+	string ExternalBetId,
+	string ExternalGameId,
+	Common.Enums.BetState BetState,
+	Common.Enums.BetType BetType,
+	Common.Enums.FreeGameState FreeGameState,
+	Common.Enums.GambleState GambleState,
+	Common.Enums.CashoutState CashoutState,
+	Common.Enums.ResettleState ResettleState,
+	Common.Enums.JackpotState JackpotState,
+	decimal CurrencyRatio,
+	decimal Bet,
+	decimal ValidBet,
+	decimal Settle,
+	decimal WinLoss,
+	decimal Turnover,
+	decimal Commission,
+	decimal Contribute,
+	decimal Jackpot) : IRequest<bool>;

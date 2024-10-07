@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
-using Tgs.GameBets.Common.Enums;
+﻿using System.Net.Http.Json;
 using Tgs.GameBets.Common.ViewModels;
 
 namespace Tgs.GameBets.Client;

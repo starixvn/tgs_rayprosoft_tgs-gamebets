@@ -7,6 +7,7 @@ using Tgs.GameBets.Core.Models.GameBetCloses;
 using Tgs.GameBets.Core.Models.GameBetRunnings;
 
 namespace Tgs.GameBets.Repositories.UnitTest;
+
 public class GameBetRunningCacheLockedRepositoryUnitTest
 {
 	[Fact]

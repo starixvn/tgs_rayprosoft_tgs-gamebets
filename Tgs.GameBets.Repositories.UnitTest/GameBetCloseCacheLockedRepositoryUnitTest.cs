@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.Json.Nodes;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using StackExchange.Redis;
@@ -12,6 +6,7 @@ using Tgs.GameBets.Core;
 using Tgs.GameBets.Core.Models.GameBetCloses;
 
 namespace Tgs.GameBets.Repositories.UnitTest;
+
 public class GameBetCloseCacheLockedRepositoryUnitTest
 {
 	[Fact]
@@ -409,7 +404,7 @@ public class GameBetCloseCacheLockedRepositoryUnitTest
 			Commission: 0.1m,
 			Contribute: 0.01m,
 			Jackpot: 0.0m,
-			
+
 			AdditionalData: new JsonObject
 			{
 				["ExternalRoundId"] = externalRoundId,

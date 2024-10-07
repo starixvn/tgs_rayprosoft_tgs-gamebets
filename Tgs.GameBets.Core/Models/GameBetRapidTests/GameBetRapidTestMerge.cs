@@ -1,23 +1,18 @@
-﻿using System.Text.Json.Nodes;
-
-namespace Tgs.GameBets.Core.Models.GameBets;
-public record GameBetAddModel(
-	Guid Id,
-	Guid GameProviderId,
-	Guid GameProviderConfigurationId,
+﻿namespace Tgs.GameBets.Core.Models.GameBetRapidTests;
+public record GameBetRapidTestMerge(
+	string GameProviderCode,
+	string SubGameProviderCode,
 	int GameId,
-	Guid ResellerId,
-	Guid LicenseeId,
-	Guid BrandId,
+	string ResellerCode,
+	string LicenseeCode,
+	string BrandCode,
 	string PlayerCode,
+	string Username,
 	string CurrencyCode,
 	Guid WalletId,
 	string ExternalRoundId,
 	string ExternalBetId,
-	DateTimeOffset ExternalCreatedOn,
-	DateTimeOffset ExternalClosedOn,
-	DateTimeOffset ExternalPayoffOn,
-	DateTimeOffset ExternalResettleOn,
+	string ExternalGameId,
 	Common.Enums.BetState BetState,
 	Common.Enums.BetType BetType,
 	Common.Enums.FreeGameState FreeGameState,
@@ -29,8 +24,8 @@ public record GameBetAddModel(
 	decimal Bet,
 	decimal ValidBet,
 	decimal Settle,
-	decimal Commission,
-	decimal Turnover,
 	decimal WinLoss,
-	decimal Jackpot,
-	JsonNode AdditionalData);
+	decimal Turnover,
+	decimal Commission,
+	decimal Contribute,
+	decimal Jackpot);
