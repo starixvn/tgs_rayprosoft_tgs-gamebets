@@ -24,28 +24,14 @@ internal class GameBetRapidTestExpireCommandService(
 					cancellationToken: cancellationToken)
 					.ConfigureAwait(false);
 
-				if (momodifiedCount > 0)
-				{
-					logger.LogWarning("{logWarning}",
-						JsonSerializer.Serialize(new
-						{
-							LogOn = DateTime.Now.ToString("u"),
-							request.GameProviderCode,
-							Count = momodifiedCount,
-							Message = "遊戲供應商設定到期時間筆數"
-						}));
-				}
-				else
-				{
-					logger.LogInformation("{logInformation}",
-						JsonSerializer.Serialize(new
-						{
-							LogOn = DateTime.Now.ToString("u"),
-							request.GameProviderCode,
-							Count = momodifiedCount,
-							Message = "遊戲供應商設定到期時間筆數"
-						}));
-				}
+				logger.LogInformation("{logInformation}",
+					JsonSerializer.Serialize(new
+					{
+						LogOn = DateTime.Now.ToString("u"),
+						request.GameProviderCode,
+						Count = momodifiedCount,
+						Message = "遊戲供應商設定到期時間筆數"
+					}));
 			}
 			catch (Exception ex)
 			{
