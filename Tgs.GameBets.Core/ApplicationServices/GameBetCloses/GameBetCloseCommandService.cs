@@ -42,7 +42,7 @@ internal class GameBetCloseCommandService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		if (gameBetId is null)
+		if (gameBetId is null || gameBetId == Guid.Empty)
 		{
 			var id = await serialNumberGenerator.GenerateAsync(cancellationToken).ConfigureAwait(false);
 
