@@ -9,7 +9,7 @@ internal class GameBetCloseGetGameBetService(
 	{
 		var info = await repository.GetAsync(
 			externalCreatedOn: request.ExternalCreatedOn,
-			gameBetId: request.GameBetId,
+			gameBetMajorId: request.GameBetId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 

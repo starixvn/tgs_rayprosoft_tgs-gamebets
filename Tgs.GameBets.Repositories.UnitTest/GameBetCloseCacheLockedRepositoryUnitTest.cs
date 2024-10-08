@@ -314,7 +314,7 @@ public class GameBetCloseCacheLockedRepositoryUnitTest
 			.Received(0)
 			.GetAsync(
 			 externalCreatedOn: Arg.Any<DateTimeOffset>(),
-			 gameBetId: Arg.Any<Guid>(),
+			 gameBetMajorId: Arg.Any<Guid>(),
 			cancellationToken: Arg.Any<CancellationToken>());
 
 		_ = fakeRepository
@@ -359,7 +359,7 @@ public class GameBetCloseCacheLockedRepositoryUnitTest
 			.Received(1)
 			.GetAsync(
 			 externalCreatedOn: Arg.Is(externalCreatedOn),
-			 gameBetId: Arg.Is(gameBetId),
+			 gameBetMajorId: Arg.Is(gameBetId),
 			cancellationToken: Arg.Any<CancellationToken>());
 
 		_ = fakeRepository
@@ -437,7 +437,7 @@ public class GameBetCloseCacheLockedRepositoryUnitTest
 			.Received(0)
 			.GetAsync(
 			externalCreatedOn: Arg.Any<DateTimeOffset>(),
-			gameBetId: Arg.Any<Guid>(),
+			gameBetMajorId: Arg.Any<Guid>(),
 			cancellationToken: Arg.Any<CancellationToken>());
 
 		_ = fakeRepository

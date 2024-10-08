@@ -66,14 +66,14 @@ internal class GameBetCloseCacheLockedRepository(
 	public ValueTask<GameBetCloseInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
 		=> repository.GetAsync(externalCreatedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
 
-	public ValueTask<GameBetCloseInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameBetId, CancellationToken cancellationToken = default)
-		=> repository.GetAsync(externalCreatedOn, gameBetId, cancellationToken);
+	public ValueTask<GameBetCloseInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameBetMajorId, CancellationToken cancellationToken = default)
+		=> repository.GetAsync(externalCreatedOn, gameBetMajorId, cancellationToken);
 
 	public ValueTask UpdateAsync(GameBetCloseUpdateModel source, CancellationToken cancellationToken = default)
 		=> repository.UpdateAsync(source, cancellationToken);
 
-	public ValueTask<Guid?> GetGameBetIdAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
-		=> repository.GetGameBetIdAsync(externalCreatedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
+	public ValueTask<Guid?> GetGameBetMajorIdAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
+		=> repository.GetGameBetMajorIdAsync(externalCreatedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
 
 	private static string GetKey(Guid gameProviderId, int gameId, Guid walletId, string externalBetId)
 			=> string.Concat(typeof(GameBetCloseCacheLockedRepository).Namespace!.Replace('.', '-').ToLower(), "bet-close", ":", "cache", ":", "locked", gameProviderId, ":", gameId, ":", walletId, ":", externalBetId);

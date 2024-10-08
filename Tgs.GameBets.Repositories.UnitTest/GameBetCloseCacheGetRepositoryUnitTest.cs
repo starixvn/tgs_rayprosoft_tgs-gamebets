@@ -631,7 +631,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 		_ = fakeRepository
 			.GetAsync(
 				externalCreatedOn: Arg.Is(model.ExternalCreatedOn),
-				gameBetId: Arg.Is(model.GameBetId),
+				gameBetMajorId: Arg.Is(model.GameBetId),
 				cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(ValueTask.FromResult<GameBetCloseInfoModel?>(model));
 
@@ -639,7 +639,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 
 		var actual = await sut.GetAsync(
 			externalCreatedOn: model.ExternalCreatedOn,
-			gameBetId: model.GameBetId,
+			gameBetMajorId: model.GameBetId,
 			cancellationToken: default);
 
 		_ = fakeDatabase
@@ -667,7 +667,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 			.Received(1)
 			.GetAsync(
 				externalCreatedOn: Arg.Is(model.ExternalCreatedOn),
-				gameBetId: Arg.Is(model.GameBetId),
+				gameBetMajorId: Arg.Is(model.GameBetId),
 				cancellationToken: Arg.Any<CancellationToken>());
 
 		Assert.NotNull(actual);
@@ -791,7 +791,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 
 		var actual = await sut.GetAsync(
 			externalCreatedOn: model.ExternalCreatedOn,
-			gameBetId: model.GameBetId,
+			gameBetMajorId: model.GameBetId,
 			cancellationToken: default);
 
 		_ = fakeDatabase
@@ -819,7 +819,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 			.Received(0)
 			.GetAsync(
 				externalCreatedOn: Arg.Is(model.ExternalCreatedOn),
-				gameBetId: Arg.Is(model.GameBetId),
+				gameBetMajorId: Arg.Is(model.GameBetId),
 				cancellationToken: Arg.Any<CancellationToken>());
 
 		_ = fakeRepository
@@ -948,7 +948,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 		_ = fakeRepository
 			.GetAsync(
 				externalCreatedOn: Arg.Is(model.ExternalCreatedOn),
-				gameBetId: Arg.Is(model.GameBetId),
+				gameBetMajorId: Arg.Is(model.GameBetId),
 				cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(model);
 
@@ -957,7 +957,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 		var actual = await sut
 			.GetAsync(
 				externalCreatedOn: model.ExternalCreatedOn,
-				gameBetId: model.GameBetId,
+				gameBetMajorId: model.GameBetId,
 				cancellationToken: default)
 			.ConfigureAwait(true);
 
@@ -986,7 +986,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 			.Received(1)
 			.GetAsync(
 				externalCreatedOn: Arg.Is(model.ExternalCreatedOn),
-				gameBetId: Arg.Is(model.GameBetId),
+				gameBetMajorId: Arg.Is(model.GameBetId),
 				cancellationToken: Arg.Any<CancellationToken>());
 
 		_ = fakeRepository
@@ -1128,7 +1128,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 			.Received(0)
 			.GetAsync(
 				externalCreatedOn: Arg.Is(source.ExternalCreatedOn),
-				gameBetId: Arg.Is(source.GameBetId),
+				gameBetMajorId: Arg.Is(source.GameBetId),
 				cancellationToken: Arg.Any<CancellationToken>());
 
 		_ = fakeRepository
@@ -1228,7 +1228,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 			.Received(0)
 			.GetAsync(
 				externalCreatedOn: Arg.Is(source.ExternalCreatedOn),
-				gameBetId: Arg.Is(source.GameBetId),
+				gameBetMajorId: Arg.Is(source.GameBetId),
 				cancellationToken: Arg.Any<CancellationToken>());
 
 		_ = fakeRepository

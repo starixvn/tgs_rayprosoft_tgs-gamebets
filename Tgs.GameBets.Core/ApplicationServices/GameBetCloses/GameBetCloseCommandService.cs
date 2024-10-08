@@ -33,7 +33,7 @@ internal class GameBetCloseCommandService(
 			return Common.Enums.GameBetCommandResult.Running;
 		}
 
-		var gameBetId = await repository.GetGameBetIdAsync(
+		var gameBetId = await repository.GetGameBetMajorIdAsync(
 			externalCreatedOn: request.ExternalCreatedOn,
 			gameProviderId: request.GameProviderId,
 			gameId: request.GameId,
@@ -94,7 +94,7 @@ internal class GameBetCloseCommandService(
 		{
 			var info = await repository.GetAsync(
 				externalCreatedOn: request.ExternalCreatedOn,
-				gameBetId: gameBetId.Value,
+				gameBetMajorId: gameBetId.Value,
 				cancellationToken: cancellationToken)
 				.ConfigureAwait(false)
 				?? throw new ArgumentNullException(gameBetId.ToString());
