@@ -303,7 +303,7 @@ public class GameBetCloseCacheLockedRepositoryUnitTest
 		_ = fakeRepository
 			.Received(1)
 			.GetAsync(
-			 closedOn: Arg.Is(externalCreatedOn),
+			 externalCreatedOn: Arg.Is(externalCreatedOn),
 			 gameProviderId: Arg.Is(gameProviderId),
 			 gameId: Arg.Is(gameId),
 			 walletId: Arg.Is(walletId),
@@ -313,7 +313,7 @@ public class GameBetCloseCacheLockedRepositoryUnitTest
 		_ = fakeRepository
 			.Received(0)
 			.GetAsync(
-			 closedOn: Arg.Any<DateTimeOffset>(),
+			 externalCreatedOn: Arg.Any<DateTimeOffset>(),
 			 gameBetId: Arg.Any<Guid>(),
 			cancellationToken: Arg.Any<CancellationToken>());
 
@@ -348,7 +348,7 @@ public class GameBetCloseCacheLockedRepositoryUnitTest
 		_ = fakeRepository
 			.Received(0)
 			.GetAsync(
-			closedOn: Arg.Any<DateTimeOffset>(),
+			externalCreatedOn: Arg.Any<DateTimeOffset>(),
 			 gameProviderId: Arg.Any<Guid>(),
 			 gameId: Arg.Any<int>(),
 			 walletId: Arg.Any<Guid>(),
@@ -358,7 +358,7 @@ public class GameBetCloseCacheLockedRepositoryUnitTest
 		_ = fakeRepository
 			.Received(1)
 			.GetAsync(
-			 closedOn: Arg.Is(externalCreatedOn),
+			 externalCreatedOn: Arg.Is(externalCreatedOn),
 			 gameBetId: Arg.Is(gameBetId),
 			cancellationToken: Arg.Any<CancellationToken>());
 
@@ -379,12 +379,13 @@ public class GameBetCloseCacheLockedRepositoryUnitTest
 
 		var externalRoundId = Guid.NewGuid().ToString();
 		var externalBetId = Guid.NewGuid().ToString();
+		var externalCreatedOn = DateTimeOffset.UtcNow.AddMinutes(-1);
 		var externalClosedOn = DateTimeOffset.UtcNow.AddSeconds(-5);
 		var externalPayoffOn = DateTimeOffset.UtcNow.AddSeconds(-6);
 
 		var source = new GameBetCloseUpdateModel(
 			GameBetId: Guid.NewGuid(),
-			ClosedOn: externalClosedOn,
+			ExternalCreatedOn: externalCreatedOn,
 			ExternalClosedOn: externalClosedOn,
 			ExternalPayoffOn: externalPayoffOn,
 			ExternalResettleOn: DateTimeOffset.UnixEpoch,
@@ -425,7 +426,7 @@ public class GameBetCloseCacheLockedRepositoryUnitTest
 		_ = fakeRepository
 			.Received(0)
 			.GetAsync(
-			closedOn: Arg.Any<DateTimeOffset>(),
+			externalCreatedOn: Arg.Any<DateTimeOffset>(),
 			gameProviderId: Arg.Any<Guid>(),
 			gameId: Arg.Any<int>(),
 			walletId: Arg.Any<Guid>(),
@@ -435,7 +436,7 @@ public class GameBetCloseCacheLockedRepositoryUnitTest
 		_ = fakeRepository
 			.Received(0)
 			.GetAsync(
-			closedOn: Arg.Any<DateTimeOffset>(),
+			externalCreatedOn: Arg.Any<DateTimeOffset>(),
 			gameBetId: Arg.Any<Guid>(),
 			cancellationToken: Arg.Any<CancellationToken>());
 

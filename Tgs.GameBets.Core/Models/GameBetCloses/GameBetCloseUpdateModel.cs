@@ -3,7 +3,7 @@
 namespace Tgs.GameBets.Core.Models.GameBetCloses;
 public record GameBetCloseUpdateModel(
 	Guid GameBetId,
-	DateTimeOffset ClosedOn,
+	DateTimeOffset ExternalCreatedOn,
 	DateTimeOffset ExternalClosedOn,
 	DateTimeOffset ExternalPayoffOn,
 	DateTimeOffset ExternalResettleOn,

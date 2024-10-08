@@ -76,7 +76,7 @@ public class GameBetCloseGetExternalServiceUnitTest
 			}.ToString(),
 			ExtendedData: new JsonObject { }.ToJsonString());
 		_ = fakeRepository.GetAsync(
-			closedOn: Arg.Is(request.ExternalCreatedOn),
+			externalCreatedOn: Arg.Is(request.ExternalCreatedOn),
 			gameProviderId: Arg.Is(request.GameProviderId),
 			gameId: Arg.Is(request.GameId),
 			walletId: Arg.Is(request.WalletId),
@@ -149,7 +149,7 @@ public class GameBetCloseGetExternalServiceUnitTest
 			ExternalBetId: externalBetId);
 
 		_ = fakeRepository.GetAsync(
-			closedOn: Arg.Is(request.ExternalCreatedOn),
+			externalCreatedOn: Arg.Is(request.ExternalCreatedOn),
 			gameProviderId: Arg.Is(request.GameProviderId),
 			gameId: Arg.Is(request.GameId),
 			walletId: Arg.Is(request.WalletId),

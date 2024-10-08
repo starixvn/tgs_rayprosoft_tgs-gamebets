@@ -68,14 +68,14 @@ public class GameBetCloseCommandServiceUnitTest
 			},
 			ExtendedData: new JsonObject { });
 
-		_ = fakeRepository.GetAsync(
-			closedOn: Arg.Is(request.ExternalCreatedOn),
+		_ = fakeRepository.GetGameBetIdAsync(
+			externalCreatedOn: Arg.Is(request.ExternalCreatedOn),
 			gameProviderId: Arg.Is(request.GameProviderId),
 			gameId: Arg.Is(request.GameId),
 			walletId: Arg.Is(request.WalletId),
 			externalBetId: Arg.Is(request.ExternalBetId),
 			cancellationToken: Arg.Any<CancellationToken>())
-			.Returns(ValueTask.FromResult<GameBetCloseInfoModel?>(null));
+			.Returns(ValueTask.FromResult<Guid?>(null));
 
 		var id = Guid.NewGuid();
 		_ = fakeSerialNumberGenerator.GenerateAsync(
@@ -135,6 +135,16 @@ public class GameBetCloseCommandServiceUnitTest
 				compare.ClosedOn == request.ClosedOn &&
 				compare.AdditionalData != null &&
 				compare.ExtendedData != null),
+			cancellationToken: Arg.Any<CancellationToken>());
+
+		_ = fakeRepository
+			.Received(0)
+			.GetAsync(
+			externalCreatedOn: Arg.Is(request.ExternalCreatedOn),
+			gameProviderId: Arg.Is(request.GameProviderId),
+			gameId: Arg.Is(request.GameId),
+			walletId: Arg.Is(request.WalletId),
+			externalBetId: Arg.Is(request.ExternalBetId),
 			cancellationToken: Arg.Any<CancellationToken>());
 
 		_ = fakeRepository
@@ -203,6 +213,15 @@ public class GameBetCloseCommandServiceUnitTest
 			},
 			ExtendedData: new JsonObject { });
 
+		_ = fakeRepository.GetGameBetIdAsync(
+			externalCreatedOn: Arg.Is(request.ExternalCreatedOn),
+			gameProviderId: Arg.Is(request.GameProviderId),
+			gameId: Arg.Is(request.GameId),
+			walletId: Arg.Is(request.WalletId),
+			externalBetId: Arg.Is(request.ExternalBetId),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(ValueTask.FromResult<Guid?>(gameBetId));
+
 		var gameBetCloseInfo = new GameBetCloseInfoModel(
 			Id: Guid.NewGuid(),
 			GameBetId: gameBetId,
@@ -249,11 +268,8 @@ public class GameBetCloseCommandServiceUnitTest
 			}.ToString(),
 			ExtendedData: new JsonObject { }.ToJsonString());
 		_ = fakeRepository.GetAsync(
-			closedOn: Arg.Is(request.ExternalCreatedOn),
-			gameProviderId: Arg.Is(request.GameProviderId),
-			gameId: Arg.Is(request.GameId),
-			walletId: Arg.Is(request.WalletId),
-			externalBetId: Arg.Is(request.ExternalBetId),
+			externalCreatedOn: Arg.Is(request.ExternalCreatedOn),
+			gameBetId: Arg.Is(gameBetId),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(gameBetCloseInfo);
 
@@ -280,7 +296,7 @@ public class GameBetCloseCommandServiceUnitTest
 			.UpdateAsync(
 			source: Arg.Is<GameBetCloseUpdateModel>(compare =>
 				compare.GameBetId == gameBetCloseInfo.GameBetId &&
-				compare.ClosedOn == gameBetCloseInfo.ExternalCreatedOn &&
+				compare.ExternalCreatedOn == gameBetCloseInfo.ExternalCreatedOn &&
 				compare.ExternalClosedOn == request.ExternalClosedOn &&
 				compare.ExternalPayoffOn == request.ExternalPayoffOn &&
 				compare.ExternalResettleOn == request.ExternalResettleOn &&
@@ -365,6 +381,15 @@ public class GameBetCloseCommandServiceUnitTest
 			},
 			ExtendedData: new JsonObject { });
 
+		_ = fakeRepository.GetGameBetIdAsync(
+			externalCreatedOn: Arg.Is(request.ExternalCreatedOn),
+			gameProviderId: Arg.Is(request.GameProviderId),
+			gameId: Arg.Is(request.GameId),
+			walletId: Arg.Is(request.WalletId),
+			externalBetId: Arg.Is(request.ExternalBetId),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(ValueTask.FromResult<Guid?>(gameBetId));
+
 		var gameBetCloseInfo = new GameBetCloseInfoModel(
 			Id: Guid.NewGuid(),
 			GameBetId: gameBetId,
@@ -411,11 +436,8 @@ public class GameBetCloseCommandServiceUnitTest
 			}.ToString(),
 			ExtendedData: new JsonObject { }.ToJsonString());
 		_ = fakeRepository.GetAsync(
-			closedOn: Arg.Is(request.ExternalCreatedOn),
-			gameProviderId: Arg.Is(request.GameProviderId),
-			gameId: Arg.Is(request.GameId),
-			walletId: Arg.Is(request.WalletId),
-			externalBetId: Arg.Is(request.ExternalBetId),
+			externalCreatedOn: Arg.Is(request.ExternalCreatedOn),
+			gameBetId: Arg.Is(gameBetId),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(gameBetCloseInfo);
 

@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using StackExchange.Redis;
 using Tgs.GameBets.Core;
-using Tgs.GameBets.Core.Models.GameBetCloses;
 using Tgs.GameBets.Core.Models.GameBetRunnings;
 
 namespace Tgs.GameBets.Repositories.UnitTest;

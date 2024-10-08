@@ -33,8 +33,8 @@ internal class GameBetCloseCommandService(
 			return Common.Enums.GameBetCommandResult.Running;
 		}
 
-		var info = await repository.GetAsync(
-			closedOn: request.ExternalCreatedOn,
+		var gameBetId = await repository.GetGameBetIdAsync(
+			externalCreatedOn: request.ExternalCreatedOn,
 			gameProviderId: request.GameProviderId,
 			gameId: request.GameId,
 			walletId: request.WalletId,
@@ -42,7 +42,7 @@ internal class GameBetCloseCommandService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		if (info is null)
+		if (gameBetId is null)
 		{
 			var id = await serialNumberGenerator.GenerateAsync(cancellationToken).ConfigureAwait(false);
 
@@ -92,6 +92,12 @@ internal class GameBetCloseCommandService(
 		}
 		else
 		{
+			var info = await repository.GetAsync(
+				externalCreatedOn: request.ExternalCreatedOn,
+				gameBetId: gameBetId.Value,
+				cancellationToken: cancellationToken)
+				.ConfigureAwait(false)
+				?? throw new ArgumentNullException(gameBetId.ToString());
 			if (
 				info.BetState == request.BetState &&
 				info.BetType == request.BetType &&
@@ -147,7 +153,7 @@ internal class GameBetCloseCommandService(
 			await repository.UpdateAsync(
 				source: new GameBetCloseUpdateModel(
 					GameBetId: info.GameBetId,
-					ClosedOn: info.ExternalCreatedOn,
+					ExternalCreatedOn: info.ExternalCreatedOn,
 					ExternalClosedOn: request.ExternalClosedOn,
 					ExternalPayoffOn: request.ExternalPayoffOn,
 					ExternalResettleOn: request.ExternalResettleOn,

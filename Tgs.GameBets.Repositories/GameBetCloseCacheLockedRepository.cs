@@ -63,17 +63,20 @@ internal class GameBetCloseCacheLockedRepository(
 		}
 	}
 
-	public ValueTask<GameBetCloseInfoModel?> GetAsync(DateTimeOffset closedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
-		=> repository.GetAsync(closedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
+	public ValueTask<GameBetCloseInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
+		=> repository.GetAsync(externalCreatedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
 
-	public ValueTask<GameBetCloseInfoModel?> GetAsync(DateTimeOffset closedOn, Guid gameBetId, CancellationToken cancellationToken = default)
-		=> repository.GetAsync(closedOn, gameBetId, cancellationToken);
+	public ValueTask<GameBetCloseInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameBetId, CancellationToken cancellationToken = default)
+		=> repository.GetAsync(externalCreatedOn, gameBetId, cancellationToken);
 
 	public ValueTask UpdateAsync(GameBetCloseUpdateModel source, CancellationToken cancellationToken = default)
 		=> repository.UpdateAsync(source, cancellationToken);
 
+	public ValueTask<Guid?> GetGameBetIdAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
+		=> repository.GetGameBetIdAsync(externalCreatedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
+
 	private static string GetKey(Guid gameProviderId, int gameId, Guid walletId, string externalBetId)
-		=> string.Concat(typeof(GameBetCloseCacheLockedRepository).Namespace!.Replace('.', '-').ToLower(), "bet-close", ":", "cache", ":", "locked", gameProviderId, ":", gameId, ":", walletId, ":", externalBetId);
+			=> string.Concat(typeof(GameBetCloseCacheLockedRepository).Namespace!.Replace('.', '-').ToLower(), "bet-close", ":", "cache", ":", "locked", gameProviderId, ":", gameId, ":", walletId, ":", externalBetId);
 
 	private async ValueTask<bool> SetKeyAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId)
 		=> await database.StringSetAsync(
@@ -96,6 +99,4 @@ internal class GameBetCloseCacheLockedRepository(
 			key: GetKey(gameProviderId, gameId, walletId, externalBetId),
 			flags: CommandFlags.FireAndForget)
 		.ConfigureAwait(false);
-	public ValueTask<bool> ExistsAsync(DateTimeOffset closedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
-		=> repository.ExistsAsync(closedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
 }

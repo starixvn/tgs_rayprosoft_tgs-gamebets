@@ -156,7 +156,6 @@ internal class GameBetMajorCacheGetRepository(
 		try
 		{
 			await DeleteCacheAsync(
-					externalCreatedOn: source.ExternalCreatedOn,
 					id: source.Id)
 				.ConfigureAwait(false);
 
@@ -186,7 +185,6 @@ internal class GameBetMajorCacheGetRepository(
 		try
 		{
 			await DeleteCacheAsync(
-					externalCreatedOn: source.ExternalCreatedOn,
 					id: source.Id)
 				.ConfigureAwait(false);
 
@@ -210,9 +208,6 @@ internal class GameBetMajorCacheGetRepository(
 			throw;
 		}
 	}
-
-	public ValueTask<bool> ExistsAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
-		=> repository.ExistsAsync(externalCreatedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
 
 	private static string GetKey(Guid gameProviderId, int gameId, Guid walletId, string externalBetId)
 			=> string.Concat([
@@ -286,7 +281,7 @@ internal class GameBetMajorCacheGetRepository(
 				flags: CommandFlags.FireAndForget)
 			.ConfigureAwait(false);
 
-	private async ValueTask DeleteCacheAsync(DateTimeOffset externalCreatedOn, Guid id)
+	private async ValueTask DeleteCacheAsync(Guid id)
 		=> await database
 			.KeyDeleteAsync(
 				key: GetKey(id),
