@@ -68,7 +68,7 @@ public class GameBetCloseCommandServiceUnitTest
 			},
 			ExtendedData: new JsonObject { });
 
-		_ = fakeRepository.GetGameBetIdAsync(
+		_ = fakeRepository.GetGameBetMajorIdAsync(
 			externalCreatedOn: Arg.Is(request.ExternalCreatedOn),
 			gameProviderId: Arg.Is(request.GameProviderId),
 			gameId: Arg.Is(request.GameId),
@@ -76,6 +76,151 @@ public class GameBetCloseCommandServiceUnitTest
 			externalBetId: Arg.Is(request.ExternalBetId),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(ValueTask.FromResult<Guid?>(null));
+
+		var id = Guid.NewGuid();
+		_ = fakeSerialNumberGenerator.GenerateAsync(
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(id);
+
+		var sut = new GameBetCloseCommandService(
+			fakeLog,
+			fakeSerialNumberGenerator,
+			fakeRepository);
+
+		var cancellationTokenSource = new CancellationTokenSource();
+		var token = cancellationTokenSource.Token;
+
+		var actual = await sut.Handle(request, token);
+
+		Assert.Equal(Common.Enums.GameBetCommandResult.Add, actual);
+
+		_ = fakeRepository
+			.Received(1)
+			.AddAsync(
+			source: Arg.Is<GameBetCloseAddModel>(compare =>
+				compare.Id == id &&
+				compare.GameBetId == request.GameBetId &&
+				compare.GameProviderId == request.GameProviderId &&
+				compare.GameProviderConfigurationId == request.GameProviderConfigurationId &&
+				compare.GameId == request.GameId &&
+				compare.ResellerId == request.ResellerId &&
+				compare.LicenseeId == request.LicenseeId &&
+				compare.BrandId == request.BrandId &&
+				compare.PlayerCode == request.PlayerCode &&
+				compare.CurrencyCode == request.CurrencyCode &&
+				compare.WalletId == request.WalletId &&
+				compare.ExternalRoundId == request.ExternalRoundId &&
+				compare.ExternalBetId == request.ExternalBetId &&
+				compare.ExternalCreatedOn == request.ExternalCreatedOn &&
+				compare.ExternalClosedOn == request.ExternalClosedOn &&
+				compare.ExternalPayoffOn == request.ExternalPayoffOn &&
+				compare.ExternalResettleOn == request.ExternalResettleOn &&
+				compare.BetState == request.BetState &&
+				compare.BetType == request.BetType &&
+				compare.FreeGameState == request.FreeGameState &&
+				compare.GambleState == request.GambleState &&
+				compare.CashoutState == request.CashoutState &&
+				compare.ResettleState == request.ResettleState &&
+				compare.JackpotState == request.JackpotState &&
+				compare.CurrencyRatio == request.CurrencyRatio &&
+				compare.Bet == request.Bet &&
+				compare.ValidBet == request.ValidBet &&
+				compare.Settle == request.Settle &&
+				compare.WinLoss == request.WinLoss &&
+				compare.Turnover == request.Turnover &&
+				compare.Commission == request.Commission &&
+				compare.Contribute == request.Contribute &&
+				compare.Jackpot == request.Jackpot &&
+				compare.CreatedOn == request.CreatedOn &&
+				compare.ClosedOn == request.ClosedOn &&
+				compare.AdditionalData != null &&
+				compare.ExtendedData != null),
+			cancellationToken: Arg.Any<CancellationToken>());
+
+		_ = fakeRepository
+			.Received(0)
+			.GetAsync(
+			externalCreatedOn: Arg.Is(request.ExternalCreatedOn),
+			gameProviderId: Arg.Is(request.GameProviderId),
+			gameId: Arg.Is(request.GameId),
+			walletId: Arg.Is(request.WalletId),
+			externalBetId: Arg.Is(request.ExternalBetId),
+			cancellationToken: Arg.Any<CancellationToken>());
+
+		_ = fakeRepository
+			.Received(0)
+			.UpdateAsync(
+			source: Arg.Any<GameBetCloseUpdateModel>(),
+			cancellationToken: Arg.Any<CancellationToken>());
+	}
+
+	[Fact]
+	public async Task This_game_bet_adds_data_Guid_Empty()
+	{
+		var fakeLog = NullLogger<GameBetCloseCommandService>.Instance;
+		var fakeSerialNumberGenerator = Substitute.For<ISerialNumberGenerator>();
+		var fakeRepository = Substitute.For<IGameBetCloseRepository>();
+
+		var gameBetId = Guid.NewGuid();
+		var externalRoundId = Guid.NewGuid().ToString();
+		var externalBetId = Guid.NewGuid().ToString();
+		var externalCreatedOn = DateTimeOffset.UtcNow.AddMinutes(-5);
+		var externalClosedOn = DateTimeOffset.UtcNow.AddSeconds(-5);
+		var externalPayoffOn = DateTimeOffset.UtcNow;
+		var externalResettleOn = DateTimeOffset.UnixEpoch;
+		var createdOn = DateTimeOffset.UtcNow.AddMinutes(-4);
+		var closedOn = DateTimeOffset.UtcNow.AddSeconds(-3);
+
+		var request = new GameBetCloseCommandRequest(
+			GameBetId: gameBetId,
+			GameProviderId: Guid.NewGuid(),
+			GameProviderConfigurationId: Guid.NewGuid(),
+			GameId: 1,
+			ResellerId: Guid.NewGuid(),
+			LicenseeId: Guid.NewGuid(),
+			BrandId: Guid.NewGuid(),
+			PlayerCode: "test",
+			CurrencyCode: "CNY",
+			WalletId: Guid.NewGuid(),
+			ExternalRoundId: externalRoundId,
+			ExternalBetId: externalBetId,
+			ExternalCreatedOn: externalCreatedOn,
+			ExternalClosedOn: externalClosedOn,
+			ExternalPayoffOn: externalPayoffOn,
+			ExternalResettleOn: externalResettleOn,
+			BetState: Common.Enums.BetState.Win,
+			BetType: Common.Enums.BetType.Normal,
+			FreeGameState: Common.Enums.FreeGameState.None,
+			GambleState: Common.Enums.GambleState.None,
+			CashoutState: Common.Enums.CashoutState.None,
+			ResettleState: Common.Enums.ResettleState.None,
+			JackpotState: Common.Enums.JackpotState.None,
+			CurrencyRatio: 1.0m,
+			Bet: 100.0m,
+			ValidBet: 50.0m,
+			Settle: 97.5m,
+			WinLoss: 47.5m,
+			Turnover: 50,
+			Commission: 0.1m,
+			Contribute: 0.01m,
+			Jackpot: 0.0m,
+			CreatedOn: createdOn,
+			ClosedOn: closedOn,
+			AdditionalData: new JsonObject
+			{
+				["ExternalRoundId"] = externalRoundId,
+				["ExternalBetId"] = externalBetId
+			},
+			ExtendedData: new JsonObject { });
+
+		_ = fakeRepository.GetGameBetMajorIdAsync(
+			externalCreatedOn: Arg.Is(request.ExternalCreatedOn),
+			gameProviderId: Arg.Is(request.GameProviderId),
+			gameId: Arg.Is(request.GameId),
+			walletId: Arg.Is(request.WalletId),
+			externalBetId: Arg.Is(request.ExternalBetId),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(ValueTask.FromResult<Guid?>(Guid.Empty));
 
 		var id = Guid.NewGuid();
 		_ = fakeSerialNumberGenerator.GenerateAsync(
@@ -213,7 +358,7 @@ public class GameBetCloseCommandServiceUnitTest
 			},
 			ExtendedData: new JsonObject { });
 
-		_ = fakeRepository.GetGameBetIdAsync(
+		_ = fakeRepository.GetGameBetMajorIdAsync(
 			externalCreatedOn: Arg.Is(request.ExternalCreatedOn),
 			gameProviderId: Arg.Is(request.GameProviderId),
 			gameId: Arg.Is(request.GameId),
@@ -269,7 +414,7 @@ public class GameBetCloseCommandServiceUnitTest
 			ExtendedData: new JsonObject { }.ToJsonString());
 		_ = fakeRepository.GetAsync(
 			externalCreatedOn: Arg.Is(request.ExternalCreatedOn),
-			gameBetId: Arg.Is(gameBetId),
+			gameBetMajorId: Arg.Is(gameBetId),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(gameBetCloseInfo);
 
@@ -381,7 +526,7 @@ public class GameBetCloseCommandServiceUnitTest
 			},
 			ExtendedData: new JsonObject { });
 
-		_ = fakeRepository.GetGameBetIdAsync(
+		_ = fakeRepository.GetGameBetMajorIdAsync(
 			externalCreatedOn: Arg.Is(request.ExternalCreatedOn),
 			gameProviderId: Arg.Is(request.GameProviderId),
 			gameId: Arg.Is(request.GameId),
@@ -437,7 +582,7 @@ public class GameBetCloseCommandServiceUnitTest
 			ExtendedData: new JsonObject { }.ToJsonString());
 		_ = fakeRepository.GetAsync(
 			externalCreatedOn: Arg.Is(request.ExternalCreatedOn),
-			gameBetId: Arg.Is(gameBetId),
+			gameBetMajorId: Arg.Is(gameBetId),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(gameBetCloseInfo);
 

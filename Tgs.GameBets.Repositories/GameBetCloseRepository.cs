@@ -64,17 +64,6 @@ internal class GameBetCloseRepository(
 		_ = await context.SaveChangesAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
-	public async ValueTask<bool> ExistsAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
-	=> await context.GameBetCloses
-		.Where(gbc => gbc.ClosedOn >= externalCreatedOn.UtcDateTime.AddDays(-1) &&
-			gbc.ClosedOn < DateTimeOffset.UtcNow.UtcDateTime &&
-			gbc.GameProviderId == gameProviderId &&
-			gbc.GameId == gameId &&
-			gbc.WalletId == walletId &&
-			gbc.ExternalBetId == externalBetId)
-		.AnyAsync(cancellationToken)
-		.ConfigureAwait(false);
-
 	public async ValueTask<GameBetCloseInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
 	=> await context.GameBetCloses
 		.Where(gbc => gbc.ClosedOn >= externalCreatedOn.UtcDateTime.AddDays(-1) &&
@@ -127,11 +116,11 @@ internal class GameBetCloseRepository(
 		.FirstOrDefaultAsync(cancellationToken: cancellationToken)
 		.ConfigureAwait(false);
 
-	public async ValueTask<GameBetCloseInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameBetId, CancellationToken cancellationToken = default)
+	public async ValueTask<GameBetCloseInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameBetMajorId, CancellationToken cancellationToken = default)
 	=> await context.GameBetCloses
 		.Where(gbc => gbc.ClosedOn >= externalCreatedOn.UtcDateTime.AddDays(-1) &&
 			gbc.ClosedOn < DateTimeOffset.UtcNow.UtcDateTime &&
-			gbc.GameBetMajorId == gameBetId)
+			gbc.GameBetMajorId == gameBetMajorId)
 		.Select(gbc => new GameBetCloseInfoModel(
 			gbc.Id,
 			gbc.GameBetMajorId,
@@ -176,7 +165,7 @@ internal class GameBetCloseRepository(
 		.FirstOrDefaultAsync(cancellationToken: cancellationToken)
 		.ConfigureAwait(false);
 
-	public async ValueTask<Guid?> GetGameBetIdAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
+	public async ValueTask<Guid?> GetGameBetMajorIdAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
 	=> await context.GameBetCloses
 		.Where(gbc => gbc.ClosedOn >= externalCreatedOn.UtcDateTime.AddDays(-1) &&
 			gbc.ClosedOn < DateTimeOffset.UtcNow.UtcDateTime &&
@@ -184,7 +173,7 @@ internal class GameBetCloseRepository(
 			gbc.GameId == gameId &&
 			gbc.WalletId == walletId &&
 			gbc.ExternalBetId == externalBetId)
-		.Select(gbc => gbc.Id)
+		.Select(gbc => gbc.GameBetMajorId)
 		.FirstOrDefaultAsync(cancellationToken: cancellationToken)
 		.ConfigureAwait(false);
 
