@@ -54,9 +54,10 @@ internal class GameBetRapidTestRepository(
 			.Set(s => s.Bet, source.Bet)
 			.Set(s => s.ValidBet, source.ValidBet)
 			.Set(s => s.Settle, source.Settle)
-			.Set(s => s.Commission, source.Commission)
-			.Set(s => s.Turnover, source.Turnover)
 			.Set(s => s.WinLoss, source.WinLoss)
+			.Set(s => s.Turnover, source.Turnover)
+			.Set(s => s.Commission, source.Commission)
+			.Set(s => s.Contribute, source.Contribute)
 			.Set(s => s.Jackpot, source.Jackpot);
 
 		var options = new UpdateOptions

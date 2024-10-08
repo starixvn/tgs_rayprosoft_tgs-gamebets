@@ -161,12 +161,12 @@ public record GameBetRapidTest
 	[BsonDefaultValue(0)]
 	public decimal Settle { get; set; }
 	/// <summary>
-	/// The commission
+	/// The win loss
 	/// </summary>
-	[BsonElement("commission")]
+	[BsonElement("win_loss")]
 	[BsonRepresentation(BsonType.Decimal128)]
 	[BsonDefaultValue(0)]
-	public decimal Commission { get; set; }
+	public decimal WinLoss { get; set; }
 	/// <summary>
 	/// The turnover
 	/// </summary>
@@ -175,25 +175,29 @@ public record GameBetRapidTest
 	[BsonDefaultValue(0)]
 	public decimal Turnover { get; set; }
 	/// <summary>
-	/// The win loss
+	/// The commission
 	/// </summary>
-	[BsonElement("win_loss")]
+	[BsonElement("commission")]
 	[BsonRepresentation(BsonType.Decimal128)]
 	[BsonDefaultValue(0)]
-	public decimal WinLoss { get; set; }
+	[BsonIgnoreIfNull]
+	public decimal Commission { get; set; }
+	/// <summary>
+	/// The contribute
+	/// </summary>
+	[BsonElement("contribute")]
+	[BsonRepresentation(BsonType.Decimal128)]
+	[BsonDefaultValue(0)]
+	[BsonIgnoreIfNull]
+	public decimal Contribute { get; set; }
 	/// <summary>
 	/// The jackpot
 	/// </summary>
 	[BsonElement("jackpot")]
 	[BsonRepresentation(BsonType.Decimal128)]
 	[BsonDefaultValue(0)]
+	[BsonIgnoreIfNull]
 	public decimal Jackpot { get; set; }
-	/// <summary>
-	/// The additional data
-	/// </summary>
-	[BsonElement("additional_data")]
-	[BsonRepresentation(BsonType.String)]
-	public string AdditionalData { get; set; } = default!;
 	/// <summary>
 	/// The rapid test on
 	/// </summary>
