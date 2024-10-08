@@ -101,7 +101,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 
 		_ = fakeRepository
 			.GetAsync(
-				closedOn: Arg.Is(model.ClosedOn),
+				externalCreatedOn: Arg.Is(model.ClosedOn),
 				gameProviderId: Arg.Is(model.GameProviderId),
 				gameId: Arg.Is(model.GameId),
 				walletId: Arg.Is(model.WalletId),
@@ -112,7 +112,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 		var sut = new GameBetCloseCacheGetRepository(fakeRepository, fakeDatabase, fakeTimeSpan, fakeLog);
 
 		var actual = await sut.GetAsync(
-			closedOn: model.ClosedOn,
+			externalCreatedOn: model.ClosedOn,
 			gameProviderId: model.GameProviderId,
 			gameId: model.GameId,
 			walletId: model.WalletId,
@@ -143,7 +143,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 		_ = fakeRepository
 			.Received(1)
 			.GetAsync(
-				closedOn: Arg.Is(model.ClosedOn),
+				externalCreatedOn: Arg.Is(model.ClosedOn),
 				gameProviderId: Arg.Is(model.GameProviderId),
 				gameId: Arg.Is(model.GameId),
 				walletId: Arg.Is(model.WalletId),
@@ -276,7 +276,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 		var sut = new GameBetCloseCacheGetRepository(fakeRepository, fakeDatabase, fakeTimeSpan, fakeLog);
 
 		var actual = await sut.GetAsync(
-			closedOn: model.ClosedOn,
+			externalCreatedOn: model.ClosedOn,
 			gameProviderId: model.GameProviderId,
 			gameId: model.GameId,
 			walletId: model.WalletId,
@@ -307,7 +307,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 		_ = fakeRepository
 			.Received(0)
 			.GetAsync(
-				closedOn: Arg.Is(model.ClosedOn),
+				externalCreatedOn: Arg.Is(model.ClosedOn),
 				gameProviderId: Arg.Is(model.GameProviderId),
 				gameId: Arg.Is(model.GameId),
 				walletId: Arg.Is(model.WalletId),
@@ -445,7 +445,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 
 		_ = fakeRepository
 			.GetAsync(
-				closedOn: Arg.Is(model.ClosedOn),
+				externalCreatedOn: Arg.Is(model.ClosedOn),
 				gameProviderId: Arg.Is(model.GameProviderId),
 				gameId: Arg.Is(model.GameId),
 				walletId: Arg.Is(model.WalletId),
@@ -457,7 +457,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 
 		var actual = await sut
 			.GetAsync(
-				closedOn: model.ClosedOn,
+				externalCreatedOn: model.ClosedOn,
 				gameProviderId: model.GameProviderId,
 				gameId: model.GameId,
 				walletId: model.WalletId,
@@ -489,7 +489,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 		_ = fakeRepository
 			.Received(1)
 			.GetAsync(
-				closedOn: Arg.Is(model.ClosedOn),
+				externalCreatedOn: Arg.Is(model.ClosedOn),
 				gameProviderId: Arg.Is(model.GameProviderId),
 				gameId: Arg.Is(model.GameId),
 				walletId: Arg.Is(model.WalletId),
@@ -630,7 +630,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 
 		_ = fakeRepository
 			.GetAsync(
-				closedOn: Arg.Is(model.ClosedOn),
+				externalCreatedOn: Arg.Is(model.ExternalCreatedOn),
 				gameBetId: Arg.Is(model.GameBetId),
 				cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(ValueTask.FromResult<GameBetCloseInfoModel?>(model));
@@ -638,7 +638,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 		var sut = new GameBetCloseCacheGetRepository(fakeRepository, fakeDatabase, fakeTimeSpan, fakeLog);
 
 		var actual = await sut.GetAsync(
-			closedOn: model.ClosedOn,
+			externalCreatedOn: model.ExternalCreatedOn,
 			gameBetId: model.GameBetId,
 			cancellationToken: default);
 
@@ -666,7 +666,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 		_ = fakeRepository
 			.Received(1)
 			.GetAsync(
-				closedOn: Arg.Is(model.ClosedOn),
+				externalCreatedOn: Arg.Is(model.ExternalCreatedOn),
 				gameBetId: Arg.Is(model.GameBetId),
 				cancellationToken: Arg.Any<CancellationToken>());
 
@@ -790,7 +790,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 		var sut = new GameBetCloseCacheGetRepository(fakeRepository, fakeDatabase, fakeTimeSpan, fakeLog);
 
 		var actual = await sut.GetAsync(
-			closedOn: model.ClosedOn,
+			externalCreatedOn: model.ExternalCreatedOn,
 			gameBetId: model.GameBetId,
 			cancellationToken: default);
 
@@ -818,7 +818,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 		_ = fakeRepository
 			.Received(0)
 			.GetAsync(
-				closedOn: Arg.Is(model.ClosedOn),
+				externalCreatedOn: Arg.Is(model.ExternalCreatedOn),
 				gameBetId: Arg.Is(model.GameBetId),
 				cancellationToken: Arg.Any<CancellationToken>());
 
@@ -947,7 +947,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 
 		_ = fakeRepository
 			.GetAsync(
-				closedOn: Arg.Is(model.ClosedOn),
+				externalCreatedOn: Arg.Is(model.ExternalCreatedOn),
 				gameBetId: Arg.Is(model.GameBetId),
 				cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(model);
@@ -956,7 +956,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 
 		var actual = await sut
 			.GetAsync(
-				closedOn: model.ClosedOn,
+				externalCreatedOn: model.ExternalCreatedOn,
 				gameBetId: model.GameBetId,
 				cancellationToken: default)
 			.ConfigureAwait(true);
@@ -985,7 +985,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 		_ = fakeRepository
 			.Received(1)
 			.GetAsync(
-				closedOn: Arg.Is(model.ClosedOn),
+				externalCreatedOn: Arg.Is(model.ExternalCreatedOn),
 				gameBetId: Arg.Is(model.GameBetId),
 				cancellationToken: Arg.Any<CancellationToken>());
 
@@ -1051,7 +1051,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 
 		var source = new GameBetCloseUpdateModel(
 			GameBetId: Guid.NewGuid(),
-			ClosedOn: DateTimeOffset.UtcNow.AddMinutes(-5),
+			ExternalCreatedOn: DateTimeOffset.UtcNow.AddMinutes(-5),
 			ExternalClosedOn: DateTimeOffset.UtcNow.AddMinutes(-5),
 			ExternalPayoffOn: DateTimeOffset.UtcNow.AddSeconds(-6),
 			ExternalResettleOn: DateTimeOffset.UnixEpoch,
@@ -1127,7 +1127,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 		_ = fakeRepository
 			.Received(0)
 			.GetAsync(
-				closedOn: Arg.Is(source.ClosedOn),
+				externalCreatedOn: Arg.Is(source.ExternalCreatedOn),
 				gameBetId: Arg.Is(source.GameBetId),
 				cancellationToken: Arg.Any<CancellationToken>());
 
@@ -1151,7 +1151,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 
 		var source = new GameBetCloseUpdateModel(
 			GameBetId: Guid.NewGuid(),
-			ClosedOn: DateTimeOffset.UtcNow.AddMinutes(-5),
+			ExternalCreatedOn: DateTimeOffset.UtcNow.AddMinutes(-5),
 			ExternalClosedOn: DateTimeOffset.UtcNow.AddMinutes(-5),
 			ExternalPayoffOn: DateTimeOffset.UtcNow.AddSeconds(-6),
 			ExternalResettleOn: DateTimeOffset.UnixEpoch,
@@ -1227,7 +1227,7 @@ public class GameBetCloseCacheGetRepositoryUnitTest
 		_ = fakeRepository
 			.Received(0)
 			.GetAsync(
-				closedOn: Arg.Is(source.ClosedOn),
+				externalCreatedOn: Arg.Is(source.ExternalCreatedOn),
 				gameBetId: Arg.Is(source.GameBetId),
 				cancellationToken: Arg.Any<CancellationToken>());
 

@@ -15,7 +15,7 @@ internal class GameBetCloseCacheGetRepository(
 	public ValueTask AddAsync(GameBetCloseAddModel source, CancellationToken cancellationToken = default)
 		=> repository.AddAsync(source, cancellationToken);
 
-	public async ValueTask<GameBetCloseInfoModel?> GetAsync(DateTimeOffset closedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
+	public async ValueTask<GameBetCloseInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
 	{
 		GameBetCloseInfoModel? model;
 		bool cacheWorking = false;
@@ -39,7 +39,7 @@ internal class GameBetCloseCacheGetRepository(
 				JsonSerializer.Serialize(new
 				{
 					LogOn = DateTime.Now.ToString("u"),
-					closedOn,
+					externalCreatedOn,
 					gameProviderId,
 					gameId,
 					walletId,
@@ -50,7 +50,7 @@ internal class GameBetCloseCacheGetRepository(
 
 		model = await repository
 			.GetAsync(
-				closedOn: closedOn,
+				externalCreatedOn: externalCreatedOn,
 				gameProviderId: gameProviderId,
 				gameId: gameId,
 				walletId: walletId,
@@ -76,7 +76,7 @@ internal class GameBetCloseCacheGetRepository(
 					JsonSerializer.Serialize(new
 					{
 						LogOn = DateTime.Now.ToString("u"),
-						closedOn,
+						externalCreatedOn,
 						gameProviderId,
 						gameId,
 						walletId,
@@ -89,7 +89,7 @@ internal class GameBetCloseCacheGetRepository(
 		return model;
 	}
 
-	public async ValueTask<GameBetCloseInfoModel?> GetAsync(DateTimeOffset closedOn, Guid gameBetId, CancellationToken cancellationToken = default)
+	public async ValueTask<GameBetCloseInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameBetId, CancellationToken cancellationToken = default)
 	{
 		GameBetCloseInfoModel? model;
 		bool cacheWorking = false;
@@ -110,7 +110,7 @@ internal class GameBetCloseCacheGetRepository(
 				JsonSerializer.Serialize(new
 				{
 					LogOn = DateTime.Now.ToString("u"),
-					closedOn,
+					externalCreatedOn,
 					gameBetId,
 					Message = "An exception has occurred when get bets to this game"
 				}));
@@ -118,7 +118,7 @@ internal class GameBetCloseCacheGetRepository(
 
 		model = await repository
 			.GetAsync(
-				closedOn: closedOn,
+				externalCreatedOn: externalCreatedOn,
 				gameBetId: gameBetId,
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
@@ -138,7 +138,7 @@ internal class GameBetCloseCacheGetRepository(
 					JsonSerializer.Serialize(new
 					{
 						LogOn = DateTime.Now.ToString("u"),
-						closedOn,
+						externalCreatedOn,
 						gameBetId,
 						Message = "An exception has occurred when cache bets to this game"
 					}));
@@ -168,7 +168,7 @@ internal class GameBetCloseCacheGetRepository(
 				JsonSerializer.Serialize(new
 				{
 					LogOn = DateTime.Now.ToString("u"),
-					source.ClosedOn,
+					source.ExternalCreatedOn,
 					source.GameBetId,
 					Message = "An exception has occurred when update bets to this game"
 				}));
@@ -177,8 +177,11 @@ internal class GameBetCloseCacheGetRepository(
 		}
 	}
 
+	public ValueTask<Guid?> GetGameBetIdAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
+		=> repository.GetGameBetIdAsync(externalCreatedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
+
 	private static string GetKey(Guid gameBetId)
-		=> string.Concat([
+			=> string.Concat([
 			typeof(GameBetCloseCacheGetRepository).Namespace!.Replace('.', '-').ToLower(),
 			"bet-close",
 			":",
@@ -255,6 +258,4 @@ internal class GameBetCloseCacheGetRepository(
 				key: GetKey(gameBetId),
 				flags: CommandFlags.FireAndForget)
 			.ConfigureAwait(false);
-	public ValueTask<bool> ExistsAsync(DateTimeOffset closedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
-		=> repository.ExistsAsync(closedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
 }

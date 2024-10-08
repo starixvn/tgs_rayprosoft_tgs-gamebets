@@ -66,7 +66,7 @@ internal class GameBetMajorRepository(
 	public async ValueTask ClosedAsync(GameBetMajorClosedModel source, CancellationToken cancellationToken = default)
 	{
 		var entity = await context.GameBetMajors
-			.Where(gbm => gbm.ExternalCreatedOn >= source.ExternalCreatedOn.UtcDateTime.AddDays(-2) &&
+			.Where(gbm => gbm.ExternalCreatedOn >= source.ExternalCreatedOn.UtcDateTime.AddHours(-1) &&
 			gbm.ExternalCreatedOn < DateTimeOffset.UtcNow.UtcDateTime &&
 			gbm.Id == source.Id &&
 			(gbm.BetState == (int)Common.Enums.BetState.Waiting || gbm.BetState == (int)Common.Enums.BetState.Running))
@@ -106,16 +106,17 @@ internal class GameBetMajorRepository(
 
 	public async ValueTask<bool> ExistsAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
 		=> await context.GameBetMajors
-		.Where(gbm => gbm.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-2) &&
+		.Where(gbm => gbm.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-1) &&
 			gbm.ExternalCreatedOn < DateTimeOffset.UtcNow.UtcDateTime &&
 			gbm.GameProviderId == gameProviderId &&
 			gbm.GameId == gameId &&
 			gbm.WalletId == walletId &&
 			gbm.ExternalBetId == externalBetId)
 		.AnyAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+
 	public async ValueTask<GameBetMajorInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
 	=> await context.GameBetMajors
-		.Where(gbm => gbm.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-2) &&
+		.Where(gbm => gbm.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-1) &&
 			gbm.ExternalCreatedOn < DateTimeOffset.UtcNow.UtcDateTime &&
 			gbm.GameProviderId == gameProviderId &&
 			gbm.GameId == gameId &&
@@ -164,7 +165,7 @@ internal class GameBetMajorRepository(
 
 	public async ValueTask<GameBetMajorInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid id, CancellationToken cancellationToken = default)
 	=> await context.GameBetMajors
-		.Where(gbm => gbm.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-2) &&
+		.Where(gbm => gbm.ExternalCreatedOn >= externalCreatedOn.UtcDateTime.AddDays(-1) &&
 			gbm.ExternalCreatedOn < DateTimeOffset.UtcNow.UtcDateTime &&
 			gbm.Id == id)
 		.Select(gbm => new GameBetMajorInfoModel(
@@ -211,7 +212,7 @@ internal class GameBetMajorRepository(
 	public async ValueTask ReopenAsync(GameBetMajorReopenModel source, CancellationToken cancellationToken = default)
 	{
 		var entity = await context.GameBetMajors
-			.Where(gbm => gbm.ExternalCreatedOn >= source.ExternalCreatedOn.UtcDateTime.AddDays(-2) &&
+			.Where(gbm => gbm.ExternalCreatedOn >= source.ExternalCreatedOn.UtcDateTime.AddHours(-1) &&
 			gbm.ExternalCreatedOn < DateTimeOffset.UtcNow.UtcDateTime &&
 			gbm.Id == source.Id &&
 			gbm.BetState != (int)Common.Enums.BetState.Waiting &&
@@ -252,7 +253,7 @@ internal class GameBetMajorRepository(
 	public async ValueTask RunningAsync(GameBetMajorRunningModel source, CancellationToken cancellationToken = default)
 	{
 		var entity = await context.GameBetMajors
-			.Where(gbm => gbm.ExternalCreatedOn >= source.ExternalCreatedOn.UtcDateTime.AddDays(-2) &&
+			.Where(gbm => gbm.ExternalCreatedOn >= source.ExternalCreatedOn.UtcDateTime.AddHours(-1) &&
 			gbm.ExternalCreatedOn < DateTimeOffset.UtcNow.UtcDateTime &&
 			gbm.Id == source.Id &&
 			(gbm.BetState == (int)Common.Enums.BetState.Waiting || gbm.BetState == (int)Common.Enums.BetState.Running))

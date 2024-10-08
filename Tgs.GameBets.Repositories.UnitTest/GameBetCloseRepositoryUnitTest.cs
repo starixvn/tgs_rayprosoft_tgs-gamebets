@@ -796,7 +796,7 @@ public class GameBetCloseRepositoryUnitTest
 
 		var source = new GameBetCloseUpdateModel(
 			GameBetId: gameBetId,
-			ClosedOn: externalCreatedOn,
+			ExternalCreatedOn: externalCreatedOn,
 			ExternalClosedOn: DateTimeOffset.UtcNow,
 			ExternalPayoffOn: DateTimeOffset.UtcNow,
 			ExternalResettleOn: DateTimeOffset.UnixEpoch,

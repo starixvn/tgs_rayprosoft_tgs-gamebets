@@ -8,7 +8,7 @@ internal class GameBetCloseGetGameBetService(
 	public async Task<GameBetCloseInfoResponse?> Handle(GameBetCloseGetGameBetRequest request, CancellationToken cancellationToken)
 	{
 		var info = await repository.GetAsync(
-			closedOn: request.ExternalCreatedOn,
+			externalCreatedOn: request.ExternalCreatedOn,
 			gameBetId: request.GameBetId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);

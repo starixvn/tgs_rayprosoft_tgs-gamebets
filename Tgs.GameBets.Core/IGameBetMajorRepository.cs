@@ -6,8 +6,6 @@ public interface IGameBetMajorRepository
 {
 	ValueTask AddAsync(GameBetMajorAddModel source, CancellationToken cancellationToken = default);
 
-	ValueTask<bool> ExistsAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default);
-
 	ValueTask<GameBetMajorInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default);
 
 	ValueTask<GameBetMajorInfoModel?> GetAsync(DateTimeOffset externalCreatedOn, Guid id, CancellationToken cancellationToken = default);

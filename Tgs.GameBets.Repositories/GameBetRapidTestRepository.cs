@@ -2,11 +2,12 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Tgs.GameBets.Core;
-using Tgs.GameBets.Repositories.Models;
 using Polly;
-using Tgs.GameBets.Repositories.Extensions;
+using Tgs.GameBets.Core;
 using Tgs.GameBets.Core.Models.GameBetRapidTests;
+
+using Tgs.GameBets.Repositories.Extensions;
+using Tgs.GameBets.Repositories.Models;
 
 namespace Tgs.GameBets.Repositories;
 

@@ -77,7 +77,7 @@ internal class GameBetMajorCacheLockedRepository(
 		=> repository.RunningAsync(source, cancellationToken);
 
 	private static string GetKey(Guid gameProviderId, int gameId, Guid walletId, string externalBetId)
-		=> string.Concat(typeof(GameBetMajorCacheLockedRepository).Namespace!.Replace('.', '-').ToLower(), "bet-major", ":", "cache", ":", "locked", gameProviderId, ":", gameId, ":", walletId, ":", externalBetId);
+			=> string.Concat(typeof(GameBetMajorCacheLockedRepository).Namespace!.Replace('.', '-').ToLower(), "bet-major", ":", "cache", ":", "locked", gameProviderId, ":", gameId, ":", walletId, ":", externalBetId);
 
 	private async ValueTask<bool> SetKeyAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId)
 		=> await database.StringSetAsync(
@@ -100,6 +100,4 @@ internal class GameBetMajorCacheLockedRepository(
 			key: GetKey(gameProviderId, gameId, walletId, externalBetId),
 			flags: CommandFlags.FireAndForget)
 		.ConfigureAwait(false);
-	public ValueTask<bool> ExistsAsync(DateTimeOffset externalCreatedOn, Guid gameProviderId, int gameId, Guid walletId, string externalBetId, CancellationToken cancellationToken = default)
-		=> repository.ExistsAsync(externalCreatedOn, gameProviderId, gameId, walletId, externalBetId, cancellationToken);
 }
